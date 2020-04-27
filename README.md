@@ -1,2 +1,2 @@
-# fullstackopen2020
+# fullstackopen
 https://fullstackopen.com/en/
