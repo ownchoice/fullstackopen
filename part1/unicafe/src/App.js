@@ -8,6 +8,14 @@ const Button = (props) => (
   </button>
 )
 
+
+const Statistic = (props) => (
+  <li>
+    {props.text}: {props.value}
+  </li>
+)
+
+
 const Statistics = (props) => {
   const {good, neutral, bad} = props
   const total = good + neutral + bad
@@ -21,9 +29,9 @@ const Statistics = (props) => {
   return (
     <p>
       <ul>
-        <li>Good: {good}</li>
-        <li>Neutral: {neutral}</li>
-        <li>Bad: {bad}</li>
+        <Statistic text={"Good"} value={good} />
+        <Statistic text={"Neutral"} value={neutral} />
+        <Statistic text={"Bad"} value={bad} />
         <li>All: {total}</li>
         {console.log(bad * -1)}
         <li>Average: {(good - bad) / (total)}</li>
