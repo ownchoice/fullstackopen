@@ -49,7 +49,7 @@ const App = (props) => {
         <em>{props.anecdotes[mostVoted]}</em>
       </p>
       <p>
-        With {votes[mostVoted]} votes.
+        With {votes[mostVoted]} votes!
       </p>
     </div>
   )
