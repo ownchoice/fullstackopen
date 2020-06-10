@@ -14,14 +14,23 @@ const Button = (props) => (
 )
 
 const App = (props) => {
-  const [selected, setSelected] = useState(0)
+  const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(new Uint8Array(props.anecdotes.length));
+  const handleVote = (anecdoteIndex) => {
+    const newVotes = [...votes];
+    newVotes[anecdoteIndex] += 1;
+    setVotes(newVotes)
+  }
   return (
     <div>
       <p>
         {props.anecdotes[selected]}
       </p>
+      <p>
+        This anecdote has {votes[selected]} votes.
+      </p>
       <Button handleClick={() => setSelected(getRndInteger(0, props.anecdotes.length))} text="Random" />
-      <p>{selected}</p>
+      <Button handleClick={() => handleVote(selected)} text="Vote" />
     </div>
   )
 }
