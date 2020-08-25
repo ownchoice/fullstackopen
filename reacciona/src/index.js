@@ -16,14 +16,31 @@
 // // Learn more about service workers: https://bit.ly/CRA-PWA
 // serviceWorker.unregister();
 
-
-import React from 'react'
 import ReactDOM from 'react-dom'
+import React, { useState } from 'react'
 
-const Fruta = (props) => {
+const Fruta = ({ name, color, weight, adjective}) => {
   return (
     <div>
-      <p>Tengo una {props.name}, de color {props.color}, que pesa {props.weight} y es {props.adjective}.</p>
+      <p>Tengo una <strong>{name}</strong>, de color <strong>{color}</strong>, que pesa <strong>{weight}</strong> y es <strong>{adjective}</strong>.</p>
+    </div>
+  )
+}
+
+const MombreAleatorio = () => {
+  const generarNombre = () => {
+    const nombres_mujer = ['Marta', 'Lucía', 'Gabriela', 'Natalia', 'Rosa', 'Violeta']
+    const nombre = nombres_mujer[Math.floor(Math.random() * nombres_mujer.length)]
+    return nombre
+  }
+  const [ counter, setCounter ] = useState(0)
+  const handleClick = () => {
+    setCounter(counter + 1)
+  }
+
+  return (
+    <div>
+      <p>El nombre generado es <strong>{generarNombre()}</strong> <button onClick={handleClick}>Generar otro</button></p>
     </div>
   )
 }
@@ -42,7 +59,8 @@ const App = () => {
       <Fruta name="manzana" color="rojo" weight="43 gr" adjective="deliciosa" />
       <Fruta name="naranja" color="naranja" weight="35 gr" adjective="jugosa" />
       <Fruta name={fruta1.nombre} color={fruta1.color} weight={fruta1.peso} adjective={fruta1.adjetivo} />
-      <p>The time is: {now.toString()}</p>
+      <p>La hora actual es <strong>{now.toString()}</strong>.</p>
+      <MombreAleatorio></MombreAleatorio>
     </div>
   )
 }
