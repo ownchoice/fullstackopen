@@ -63,7 +63,7 @@ const crearFruta = (nom, col, adj, disp) => {
 }
 
 
-const Frutas = () => {
+const FrutasLista = () => {
   const frutasLista = [
     crearFruta("damasco", "naranja", "rústico", true),
     crearFruta("mango", "amarillo", "saludable", false),
@@ -93,7 +93,7 @@ const App = () => {
   return (
     <div>
       <h1>Greetings</h1>
-      <Frutas />
+      <FrutasLista />
       <p>La hora actual es <strong>{now.toString()}</strong>.</p>
       <MombreAleatorio />
     </div>
