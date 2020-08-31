@@ -18,18 +18,23 @@
 
 import ReactDOM from 'react-dom'
 import React, { useState } from 'react'
+const shortid = require('shortid');
 
-const Fruta = ({ name, color, weight, adjective}) => {
+
+const Fruta = ({ fruit, toggleFruit }) => {
+  const { nombre, color, peso, adjetivo, disponible } = fruit
+  const handleToggleFruit = () => {
+    toggleFruit(fruit.id)
+  }
   return (
-    <div>
-      <p>Tengo una <strong>{name}</strong>, de color <strong>{color}</strong>, que pesa <strong>{weight}</strong> y es <strong>{adjective}</strong>.</p>
-    </div>
+  <p><button onClick={() => {toggleFruit(fruit.id)}}>X</button> { disponible ? '✔️' : '❌' } Tengo una <strong>{nombre}</strong>, de color <strong>{color}</strong>, que pesa <strong>{peso}</strong> y es <strong>{adjetivo}</strong>.</p>
   )
 }
 
+
 const MombreAleatorio = () => {
   const generarNombre = () => {
-    const nombres_mujer = ['Marta', 'Lucía', 'Gabriela', 'Natalia', 'Rosa', 'Violeta']
+    const nombres_mujer = ['Marta', 'Lucía', 'Gabriela', 'Natalia', 'Rosa', 'Violeta', 'María', 'Marisol', 'Yennefer', 'Ciri', 'Gerald']
     const nombre = nombres_mujer[Math.floor(Math.random() * nombres_mujer.length)]
     return nombre
   }
@@ -45,25 +50,56 @@ const MombreAleatorio = () => {
   )
 }
 
+
+const crearFruta = (nom, col, adj, disp) => {
+  return {
+    id: shortid.generate(),
+    nombre: nom,
+    color: col,
+    peso: Math.trunc(Math.random() * (110 - 20) + 20) + " gr",
+    adjetivo: adj,
+    disponible: disp,
+  }
+}
+
+
+const Frutas = () => {
+  const frutasLista = [
+    crearFruta("damasco", "naranja", "rústico", true),
+    crearFruta("mango", "amarillo", "saludable", false),
+    crearFruta("frutilla", "roja", "exótica", true),
+    crearFruta("ananá", "naranja", "codiciada", false),
+    crearFruta("pomelo", "amarillo", "jugoso", true),
+  ]
+  const [ fruits, setFruits ] = useState(frutasLista)
+  const toggleFruit = (id) => {
+    const newFruits = [...fruits]
+    const thisFruit = newFruits.find(fruit => fruit.id === id)
+    thisFruit.disponible = !thisFruit.disponible
+    setFruits(newFruits)
+  }
+  return (
+    <>
+    { fruits.map((fruit) => <Fruta key={fruit.id} fruit={fruit} toggleFruit={toggleFruit} />) }
+    </>
+  )
+}
+
+
 const App = () => {
   const now = new Date()
-  const fruta1 = {
-    nombre: "pera",
-    color: "amarillo",
-    peso: "51 gr",
-    adjetivo: "suave",
-  }
+  
+
   return (
     <div>
       <h1>Greetings</h1>
-      <Fruta name="manzana" color="rojo" weight="43 gr" adjective="deliciosa" />
-      <Fruta name="naranja" color="naranja" weight="35 gr" adjective="jugosa" />
-      <Fruta name={fruta1.nombre} color={fruta1.color} weight={fruta1.peso} adjective={fruta1.adjetivo} />
+      <Frutas />
       <p>La hora actual es <strong>{now.toString()}</strong>.</p>
-      <MombreAleatorio></MombreAleatorio>
+      <MombreAleatorio />
     </div>
   )
 }
+
 
 ReactDOM.render(
   <React.StrictMode>
