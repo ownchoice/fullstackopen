@@ -8,14 +8,17 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    // console.log('from submit event triggered')
-    setPersons(persons.concat({ name: newName }))
-    // console.log(`person "${newName}" added`)
+    // Array comprehensions: Non-standard. Do not use!
+    // const nameList = [ for (person of persons) person.name ]
+    if (persons.some( element => element.name === newName )) {
+      window.alert(`${newName} is already added to phonebook`)
+    } else {
+      setPersons(persons.concat({ name: newName }))
+    }
     setNewName('')
   }
 
   const handleNameChange = (event) => {
-    // console.log(event.target.value)
     setNewName(event.target.value)
   }
 
