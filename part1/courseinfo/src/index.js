@@ -25,10 +25,7 @@ const Content = (props) => {
 }
 
 const Course = (props) => {
-  const reducer = (acumulator, currentValue) => {
-    console.log(currentValue.exercises)
-    return acumulator + currentValue.exercises
-  }
+  const reducer = (acumulator, currentValue) => { acumulator + currentValue.exercises }
   const totalExercises = props.course.parts.reduce(reducer, 0)
   return (
     <>
