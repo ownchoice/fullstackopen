@@ -8,14 +8,14 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    console.log('from submit event triggered')
+    // console.log('from submit event triggered')
     setPersons(persons.concat({ name: newName }))
-    console.log(`person "${newName}" added`)
+    // console.log(`person "${newName}" added`)
     setNewName('')
   }
 
   const handleNameChange = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setNewName(event.target.value)
   }
 
