@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchContact from './SearchContact'
 import AddNewContact from './AddNewContact'
 import ContactList from './ContactList'
+import axios from 'axios'
 
 const App = () => {
   const [ persons, setPersons ] = useState([
@@ -10,6 +11,16 @@ const App = () => {
     { name: 'Dan Abramov', number: '12-43-234345' },
     { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
+
+  const getContactsHook = () => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }
+  useEffect(getContactsHook, [])
+
   const [ newName, setNewName ] = useState('')
 
   const addName = (event) => {
