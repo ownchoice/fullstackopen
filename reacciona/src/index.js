@@ -18,7 +18,21 @@
 
 import ReactDOM from 'react-dom'
 import React, { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios'
 const shortid = require('shortid');
+
+
+
+const promise = axios.get('http://localhost:3001/notes')
+console.log(promise)
+
+promise.then(response => {
+  console.log(response)
+})
+
+// const promise2 = axios.get('http://localhost:3001/foobar')
+// console.log(promise2)
 
 
 const Fruta = ({ fruit, toggleFruit }) => {
