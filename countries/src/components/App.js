@@ -9,12 +9,13 @@ const App = () => {
       .get('https://restcountries.eu/rest/v2/all')
       .then(response => {
         setCountries(response.data)
-        console.log('Datos cargados')
+        // console.log('Datos cargados')
       })
   }
   useEffect(hook, [])
 
   // console.log(countries)
+
 
   const onSubmitHandler = (event) => {
     event.preventDefault()

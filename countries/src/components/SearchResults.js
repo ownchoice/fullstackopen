@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 const SearchResults = (props) => {
   // console.log('Hasta aquí llega')
-  console.log(props.countries)
+  // console.log(props.countries)
 
   // const showCountryHandler = (event) => {
   //   set
@@ -14,6 +14,7 @@ const SearchResults = (props) => {
   if (props.countries.length === 0) {
     return(<p>Type something</p>)
   } else if (props.countries.length === 1) {
+
     return (<Country country={ props.countries[0] } />)
   } else if (props.countries.length > 1 && props.countries.length < 11) {
     return(
