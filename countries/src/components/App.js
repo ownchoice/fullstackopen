@@ -34,7 +34,7 @@ const App = () => {
       </header>
       <form onSubmit={ onSubmitHandler } >
         <p>Find countries: <input value={searchQuery} onChange={ onChangeHandler } ></input></p>
-        <SearchResults countries={ countries.filter(country => country.name.toLowerCase().includes(searchQuery)) } />
+        <SearchResults countries={ countries.filter(country => country.name.toLowerCase().includes(searchQuery.toLowerCase())) } setSearchQuery={setSearchQuery} />
     </form>
     </div>
   );
