@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import SearchContact from './SearchContact'
 import AddNewContact from './AddNewContact'
 import ContactList from './ContactList'
-import axios from 'axios'
 import contactService from '../services/contacts'
 
 const App = () => {
