@@ -13,8 +13,7 @@ const App = () => {
     { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ])
 
-  const [notificationMessage, setNotificationMessage] = useState('')
-  const [notificationStyle, setNotificationStyle] = useState({
+  const successStyle = {
     background: 'lightgreen',
     color: 'green',
     fontStyle: 'bold',
@@ -23,8 +22,16 @@ const App = () => {
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
-  })
-  const sendNotification = (message) => {
+  }
+  const errorStyle = {
+    ...successStyle,
+    color: 'red',
+    background: 'lightred',
+  }
+  const [notificationMessage, setNotificationMessage] = useState('')
+  const [notificationStyle, setNotificationStyle] = useState(successStyle)
+  const sendNotification = (message, style) => {
+    setNotificationStyle(style)
     setNotificationMessage(message)
     setTimeout(() => {
       setNotificationMessage('')
@@ -44,8 +51,13 @@ const App = () => {
     if (persons.some( element => element.name === newName )) {
       if (window.confirm(`${newName} is already in the phonebook. Update it?`)) {
         contactService
-        .updateContact(persons.find( element => element.name === newName ).id, { name: newName, number: newPhonenumber }).then(response => getContactsHook())
-        sendNotification('Contact updated successfully.')
+        .updateContact(persons.find( element => element.name === newName ).id, { name: newName, number: newPhonenumber }).then(response => {
+          getContactsHook()
+          sendNotification('Contact updated successfully.', successStyle)
+        }).catch(error => {
+          sendNotification('Cannot update because the contact is already deleted.', errorStyle)
+          getContactsHook()
+        })
       }
     } else {
       contactService
@@ -53,9 +65,11 @@ const App = () => {
           { name: newName, number: newPhonenumber }
         )
         .then(
-          response => setPersons(persons.concat(response))
+          response => {
+            setPersons(persons.concat(response))
+            sendNotification('Contact added successfully.', successStyle)
+          }
         )
-        sendNotification('Contact added successfully.')
     }
     setNewName('')
     setNewPhonenumber('')
@@ -78,8 +92,10 @@ const App = () => {
 
   const deleteHandler = (person) => {
     if (window.confirm(`Delete ${person.name}?`)) {
-      contactService.deleteContact(person.id).then(response => getContactsHook())
-      sendNotification('Contact deleted.')
+      contactService.deleteContact(person.id).then(response => {
+        getContactsHook()
+        sendNotification('Contact deleted.', successStyle)
+      })
     }
   }
 
