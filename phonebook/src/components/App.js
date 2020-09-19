@@ -3,6 +3,7 @@ import SearchContact from './SearchContact'
 import AddNewContact from './AddNewContact'
 import ContactList from './ContactList'
 import contactService from '../services/contacts'
+import Notification from './Notification'
 
 const App = () => {
   const [ persons, setPersons ] = useState([
@@ -10,7 +11,25 @@ const App = () => {
     { name: 'Ada Lovelace', number: '39-44-5323523' },
     { name: 'Dan Abramov', number: '12-43-234345' },
     { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
+  ])
+
+  const [notificationMessage, setNotificationMessage] = useState('')
+  const [notificationStyle, setNotificationStyle] = useState({
+    background: 'lightgreen',
+    color: 'green',
+    fontStyle: 'bold',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  })
+  const sendNotification = (message) => {
+    setNotificationMessage(message)
+    setTimeout(() => {
+      setNotificationMessage('')
+    }, 3000)
+  }
 
   const getContactsHook = () => {
     contactService.getContacts().then(response => {
@@ -18,15 +37,15 @@ const App = () => {
     })
   }
   useEffect(getContactsHook, [])
-
+  
   const [ newName, setNewName ] = useState('')
-
   const addName = (event) => {
     event.preventDefault()
     if (persons.some( element => element.name === newName )) {
       if (window.confirm(`${newName} is already in the phonebook. Update it?`)) {
         contactService
         .updateContact(persons.find( element => element.name === newName ).id, { name: newName, number: newPhonenumber }).then(response => getContactsHook())
+        sendNotification('Contact updated successfully.')
       }
     } else {
       contactService
@@ -36,6 +55,7 @@ const App = () => {
         .then(
           response => setPersons(persons.concat(response))
         )
+        sendNotification('Contact added successfully.')
     }
     setNewName('')
     setNewPhonenumber('')
@@ -59,12 +79,14 @@ const App = () => {
   const deleteHandler = (person) => {
     if (window.confirm(`Delete ${person.name}?`)) {
       contactService.deleteContact(person.id).then(response => getContactsHook())
+      sendNotification('Contact deleted.')
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} style={notificationStyle} />
       <SearchContact filter={newSearchFilter} handleFilter={handleNewSearchFilter} />
       <AddNewContact addName={addName} newName={newName} handleNameChange={handleNameChange} newPhonenumber={newPhonenumber} handlePhonenumberChange={handlePhonenumberChange} />
       <h2>Numbers</h2>
