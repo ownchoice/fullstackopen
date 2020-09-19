@@ -24,7 +24,10 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault()
     if (persons.some( element => element.name === newName )) {
-      window.alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already in the phonebook. Update it?`)) {
+        contactService
+        .updateContact(persons.find( element => element.name === newName ).id, { name: newName, number: newPhonenumber }).then(response => getContactsHook())
+      }
     } else {
       contactService
         .addContact(
@@ -53,10 +56,10 @@ const App = () => {
     setNewSearchFilter(event.target.value)
   }
 
-  const deleteHandler = (id) => {
-    contactService.deleteContact(id).then(response => {
-      getContactsHook()
-    })
+  const deleteHandler = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      contactService.deleteContact(person.id).then(response => getContactsHook())
+    }
   }
 
   return (
