@@ -12,8 +12,6 @@ const App = () => {
     { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
 
-  const baseUrl = 'http://localhost:3001'
-
   const getContactsHook = () => {
     contactService.getContacts().then(response => {
       setPersons(response)
@@ -54,13 +52,20 @@ const App = () => {
   const handleNewSearchFilter = (event) => {
     setNewSearchFilter(event.target.value)
   }
+
+  const deleteHandler = (id) => {
+    contactService.deleteContact(id).then(response => {
+      getContactsHook()
+    })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <SearchContact filter={newSearchFilter} handleFilter={handleNewSearchFilter} />
       <AddNewContact addName={addName} newName={newName} handleNameChange={handleNameChange} newPhonenumber={newPhonenumber} handlePhonenumberChange={handlePhonenumberChange} />
       <h2>Numbers</h2>
-      <ContactList contactList={ persons.filter(person => person.name.toLowerCase().includes(newSearchFilter)) } />
+      <ContactList contactList={ persons.filter(person => person.name.toLowerCase().includes(newSearchFilter)) } deleteHandler={deleteHandler} />
     </div>
   )
 }

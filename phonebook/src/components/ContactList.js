@@ -3,7 +3,7 @@ import Contact from './Contact'
 
 const ContactList = (props) => {
   return (
-    props.contactList.map(person => <Contact key={person.name} person={person} />)
+    props.contactList.map(person => <Contact key={person.name} person={person} deleteHandler={props.deleteHandler} />)
   )
 }
 
