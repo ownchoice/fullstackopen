@@ -33,9 +33,10 @@ const App = () => {
   const sendNotification = (message, style) => {
     setNotificationStyle(style)
     setNotificationMessage(message)
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setNotificationMessage('')
     }, 3000)
+    clearTimeout(timeout)
   }
 
   const getContactsHook = () => {
