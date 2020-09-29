@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'https://stark-shelf-66775.herokuapp.com/api/persons'
+const baseUrl = '/api/persons'
 
 const getContacts = async () => {
   const response = await axios.get(baseUrl)
