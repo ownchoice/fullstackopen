@@ -26,17 +26,31 @@ const App = () => {
   const errorStyle = {
     ...successStyle,
     color: 'red',
-    background: 'lightred',
+    background: 'lightsalmon',
   }
   const [notificationMessage, setNotificationMessage] = useState('')
   const [notificationStyle, setNotificationStyle] = useState(successStyle)
+  const [notificationLastUpdate, setLastUpdate] = useState(Date.now())
+  
+
+  const cambioNotificacion = () => {
+    const timer = setTimeout(() => {
+      setNotificationMessage('')
+      // console.log('Limpiar notificación');
+    }, 5000)
+
+    return () => {
+      clearTimeout(timer)
+      // console.log('Limpiar timer');
+    }
+  }
+  useEffect(cambioNotificacion, [notificationLastUpdate])
+  
   const sendNotification = (message, style) => {
     setNotificationStyle(style)
     setNotificationMessage(message)
-    const timeout = setTimeout(() => {
-      setNotificationMessage('')
-    }, 3000)
-    clearTimeout(timeout)
+    setLastUpdate(Date.now())
+    // console.log('Renovar notificación');
   }
 
   const getContactsHook = () => {
@@ -95,7 +109,7 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
       contactService.deleteContact(person.id).then(response => {
         getContactsHook()
-        sendNotification('Contact deleted.', successStyle)
+        sendNotification('Contact deleted.', errorStyle)
       })
     }
   }
