@@ -70,7 +70,8 @@ const App = () => {
         .updateContact(persons.find( element => element.name === newName ).id, { name: newName, number: newPhonenumber }).then(response => {
           getContactsHook()
           sendNotification('Contact updated successfully.', successStyle)
-        }).catch(error => {
+        })
+        .catch(error => {
           sendNotification('Cannot update because the contact is already deleted.', errorStyle)
           getContactsHook()
         })
