@@ -87,6 +87,10 @@ const App = () => {
             sendNotification('Contact added successfully.', successStyle)
           }
         )
+        .catch(error => {
+          sendNotification('There was an error. Contact was not added. ' + error.response.data.error, errorStyle)
+          console.log(error.response.data.error)
+        })
     }
     setNewName('')
     setNewPhonenumber('')
