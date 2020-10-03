@@ -72,7 +72,8 @@ const App = () => {
           sendNotification('Contact updated successfully.', successStyle)
         })
         .catch(error => {
-          sendNotification('Cannot update because the contact is already deleted.', errorStyle)
+          sendNotification('There was an error. Nothing was updated. ' + error.response.data.error, errorStyle)
+          console.log(error.response.data.error)
           getContactsHook()
         })
       }
