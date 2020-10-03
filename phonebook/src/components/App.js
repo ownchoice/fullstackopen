@@ -116,7 +116,7 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
       contactService.deleteContact(person.id).then(response => {
         getContactsHook()
-        sendNotification('Contact deleted.', errorStyle)
+        sendNotification('Contact deleted.', successStyle)
       })
     }
   }
