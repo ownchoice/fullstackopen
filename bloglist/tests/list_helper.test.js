@@ -1,5 +1,7 @@
 const listHelper = require('../utils/list_helper')
 
+
+// npm run test
 describe('blog testing', () => {
   test('dummy returns one', () => {
     const blogs = []
@@ -64,5 +66,37 @@ describe('blog testing', () => {
 
     expect(result).toBe(36)
     
+  })
+})
+
+describe('most popular blog', () => {
+
+  // npm test -- -t 'most popular blog is'
+  test('most popular blog is', () => {
+    const blogs = [
+      {
+        title: "Canonical string reduction",
+        author: "Edsger W. Dijkstra",
+        likes: 85
+      },
+      {
+        title: "AAAAAAAAAAAAAAAA",
+        author: "Edsger W. Dijkstra",
+        likes: 12
+      },
+      {
+        title: "BBBBBBBBBBBBB",
+        author: "Edsger W. Dijkstra",
+        likes: 4
+      },
+      {
+        title: "CCCCCCCCCCCCCC",
+        author: "Edsger W. Dijkstra",
+        likes: 36
+      }
+    ]
+
+    const result = listHelper.favoriteBlog(blogs)
+    expect(result).toEqual(blogs[0])
   })
 })
