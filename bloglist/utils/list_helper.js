@@ -39,9 +39,28 @@ const mostBlogs = (blogs) => {
   })
 }
 
+const mostLikes = (blogs) => {
+  const authorsList = blogs.reduce((accumulator, currentBlog) => {
+    const foundAuthor = accumulator.find(item => item.author === currentBlog.author)
+    if (foundAuthor) {
+      foundAuthor.likes += currentBlog.likes
+    } else {
+      accumulator = accumulator.concat({ author: currentBlog.author, likes: currentBlog.likes })
+    }
+    return accumulator
+  }, [])
+
+  const mostLiked = authorsList.reduce((accumulator, currentValue) => {
+    return currentValue.likes > accumulator.likes? currentValue: accumulator
+  })
+
+  return mostLiked
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
