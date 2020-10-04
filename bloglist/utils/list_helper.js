@@ -39,7 +39,6 @@ const mostBlogs = (blogs) => {
   })
 }
 
-
 const mostLikes = (blogs) => {
   const authorsList = blogs.reduce((accumulator, currentBlog) => {
     const foundAuthor = accumulator.find(item => item.author === currentBlog.author)
