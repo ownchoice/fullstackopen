@@ -16,27 +16,30 @@ describe('when there is initially some blogs saved', () => {
     await Promise.all(promiseArray)
   })
 
-  test('blogs are returned as json', async () => {
-    await api
-      .get('/api/blogs')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+  describe('4-8 Blog list tests step1', () => {
+    test('blogs are returned as json', async () => {
+      await api
+        .get('/api/blogs')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+    })
+  
+    test('all blogs are returned', async () => {
+      const response = await api.get('/api/blogs')
+  
+      expect(response.body.length).toBe(helper.initialBlogs.length)
+    })
+  
+    test('a specific blog is within the returned blogs', async () => {
+      const response = await api.get('/api/blogs')
+  
+      const titles = response.body.map(r => r.title)
+      expect(titles).toContainEqual(
+        'TDD harms architecture'
+      )
+    })
   })
-
-  test('all blogs are returned', async () => {
-    const response = await api.get('/api/blogs')
-
-    expect(response.body.length).toBe(helper.initialBlogs.length)
-  })
-
-  test('a specific blog is within the returned blogs', async () => {
-    const response = await api.get('/api/blogs')
-
-    const titles = response.body.map(r => r.title)
-    expect(titles).toContainEqual(
-      'TDD harms architecture'
-    )
-  })
+  
 
   describe('4-9 Blog list tests step2', () => {
     test('the unique identifier property of the blog posts is named id', async () => {
@@ -116,6 +119,20 @@ describe('when there is initially some blogs saved', () => {
         .expect(400)
     })
   })
+
+  describe('4-13 Blog list expansions step1', () => {
+    test('should delete a blog and give a 204 status code', async () => {
+      const blogsAtBeginning = await helper.blogsInDb()
+      await api
+        .delete(`/api/blogs/${blogsAtBeginning[0].id}`)
+        .expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd.length).toBe(blogsAtBeginning.length - 1)
+
+    })
+  })
+  
   
 
   // describe('viewing a specific blog', () => {
