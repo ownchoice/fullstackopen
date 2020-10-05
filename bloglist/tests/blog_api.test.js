@@ -44,6 +44,40 @@ describe('when there is initially some blogs saved', () => {
       expect(response.body[0].id).toBeDefined()
     })
   })
+  
+  describe('4.10: Blog list tests, step3', () => {
+    
+    test('should be added', async () => {
+      const newBlog = {
+        title: 'Book test title',
+        author: 'Book test author',
+        url: 'http://book-test.com/url.html',
+        likes: 99,
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+
+      const titles = blogsAtEnd.map(n => n.title)
+      expect(titles).toContainEqual(
+        'Book test title'
+      )
+    })
+    
+    
+    test('should be equal to the last item', async () => {
+      
+    })
+    
+    
+  })
+  
 
   // describe('viewing a specific blog', () => {
 
@@ -81,27 +115,27 @@ describe('when there is initially some blogs saved', () => {
 
   // describe('addition of a new blog', () => {
   //   test('succeeds with valid data', async () => {
-  //     const newBlog = {
-  //       title: 'Book test title',
-  //       author: 'Book test author',
-  //       url: 'http://book-test.com/url.html',
-  //       likes: 99,
-  //     }
+      // const newBlog = {
+      //   title: 'Book test title',
+      //   author: 'Book test author',
+      //   url: 'http://book-test.com/url.html',
+      //   likes: 99,
+      // }
 
-  //     await api
-  //       .post('/api/blogs')
-  //       .send(newBlog)
-  //       .expect(200)
-  //       .expect('Content-Type', /application\/json/)
+      // await api
+      //   .post('/api/blogs')
+      //   .send(newBlog)
+      //   .expect(200)
+      //   .expect('Content-Type', /application\/json/)
 
 
-  //     const blogsAtEnd = await helper.blogsInDb()
-  //     expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+      // const blogsAtEnd = await helper.blogsInDb()
+      // expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
 
-  //     const titles = blogsAtEnd.map(n => n.title)
-  //     expect(titles).toContainEqual(
-  //       'Book test title'
-  //     )
+      // const titles = blogsAtEnd.map(n => n.title)
+      // expect(titles).toContainEqual(
+      //   'Book test title'
+      // )
   //   })
 
   //   test('fails with status code 400 if data invalid', async () => {
