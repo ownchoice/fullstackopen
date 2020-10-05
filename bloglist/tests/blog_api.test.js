@@ -38,6 +38,13 @@ describe('when there is initially some blogs saved', () => {
     )
   })
 
+  describe('4.9*: Blog list tests, step2', () => {
+    test('the unique identifier property of the blog posts is named id', async () => {
+      const response = await api.get('/api/blogs')
+      expect(response.body[0].id).toBeDefined()
+    })
+  })
+
   // describe('viewing a specific blog', () => {
 
   //   test('succeeds with a valid id', async () => {
