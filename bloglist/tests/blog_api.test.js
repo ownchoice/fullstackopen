@@ -38,14 +38,14 @@ describe('when there is initially some blogs saved', () => {
     )
   })
 
-  describe('4.9*: Blog list tests, step2', () => {
+  describe('4-9 Blog list tests step2', () => {
     test('the unique identifier property of the blog posts is named id', async () => {
       const response = await api.get('/api/blogs')
       expect(response.body[0].id).toBeDefined()
     })
   })
   
-  describe('4.10: Blog list tests, step3', () => {
+  describe('4-10 Blog list tests step3', () => {
     
     test('should be added', async () => {
       const newBlog = {
@@ -72,7 +72,7 @@ describe('when there is initially some blogs saved', () => {
   })
 
 
-  describe('4.11*: Blog list tests, step4', () => {
+  describe('4-11 Blog list tests step4', () => {
     test('should be equal to 0 by default', async () => {
       const newBlog = {
         title: 'Book test title',
@@ -91,6 +91,31 @@ describe('when there is initially some blogs saved', () => {
     })
   })
   
+  describe('4-12 Blog list tests step5', () => {
+    test('should be rejected because of missing title', async () => {
+      const newBlog = {
+        author: 'Book test author',
+        url: 'http://book-test.com/url.html',
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+    })
+
+    test('should be rejected because of missing url', async () => {
+      const newBlog = {
+        title: 'Book test title',
+        author: 'Book test author',
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+    })
+  })
   
 
   // describe('viewing a specific blog', () => {
