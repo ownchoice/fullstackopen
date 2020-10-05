@@ -5,7 +5,7 @@ const blogSchema = new mongoose.Schema({
   title: String,
   author: String,
   url: { type: String, minlength: 5, required: true, unique: true },
-  likes: Number
+  likes: { type: Number, default: 0}
 })
 
 blogSchema.set('toJSON', {

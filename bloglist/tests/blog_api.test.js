@@ -69,14 +69,28 @@ describe('when there is initially some blogs saved', () => {
         'Book test title'
       )
     })
-    
-    
-    test('should be equal to the last item', async () => {
-      
-    })
-    
-    
   })
+
+
+  describe('4.11*: Blog list tests, step4', () => {
+    test('should be equal to 0 by default', async () => {
+      const newBlog = {
+        title: 'Book test title',
+        author: 'Book test author',
+        url: 'http://book-test.com/url.html',
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+      
+      const response = await api.get('/api/blogs')
+      expect(response.body[response.body.length - 1].likes).toBe(0)
+    })
+  })
+  
   
 
   // describe('viewing a specific blog', () => {
