@@ -129,10 +129,28 @@ describe('when there is initially some blogs saved', () => {
 
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd.length).toBe(blogsAtBeginning.length - 1)
-
     })
   })
   
+  describe('4-14 Blog list expansions step2', () => {
+    test('should be updated', async () => {
+      const blogsAtBeginning = await helper.blogsInDb()
+      const oldBlog = blogsAtBeginning[0]
+      const updatedBlog = { ...oldBlog,  title: 'Updated title' }
+      const response = await api
+        .put(`/api/blogs/${oldBlog.id}`)
+        .send(updatedBlog)
+        .expect(200)
+        .expect(updatedBlog)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd.length).toBe(blogsAtBeginning.length)
+      expect(response.body).toEqual(updatedBlog)
+      // console.log(response)
+      expect(blogsAtEnd.find(blog => blog.id === oldBlog.id)).toEqual(updatedBlog)
+    })
+    
+  })
   
 
   // describe('viewing a specific blog', () => {
