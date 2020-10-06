@@ -1,7 +1,13 @@
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 
-//...
+const supertest = require('supertest')
+const mongoose = require('mongoose')
+const helper = require('./test_helper')
+const app = require('../app')
+const api = supertest(app)
+
+// const Blog = require('../models/blog')
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
@@ -34,4 +40,8 @@ describe('when there is initially one user in db', () => {
     const usernames = usersAtEnd.map(u => u.username)
     expect(usernames).toContain(newUser.username)
   })
+})
+
+afterAll(() => {
+  mongoose.connection.close()
 })
