@@ -2,6 +2,7 @@
 // const http = require('http')
 const config = require('./utils/config')
 const express = require('express')
+require('express-async-errors');
 const app = express()
 const cors = require('cors')
 const blogsRouter = require('./controllers/blogs')
@@ -22,7 +23,38 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology
 app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
-app.use(middleware.requestLogger)
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(middleware.requestLogger)
+
+
+  const morgan = require('morgan')
+  // app.use(morgan('tiny'))
+  morgan.token('mitokenpropio', function (req, res) { return JSON.stringify(req.body) })
+  app.use(morgan(function (tokens, req, res) {
+    if (tokens.method(req, res) === 'POST') {
+      return [
+        tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        'content-length:',
+        tokens.res(req, res, 'content-length'), '-',
+        tokens['response-time'](req, res), 'ms',
+        tokens.mitokenpropio(req, res)
+      ].join(' ')
+    } else {
+      return [
+        tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        'content-length:',
+        tokens.res(req, res, 'content-length'), '-',
+        tokens['response-time'](req, res), 'ms'
+      ].join(' ')
+    }
+  }))
+}
+
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)

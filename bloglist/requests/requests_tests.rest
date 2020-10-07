@@ -15,3 +15,18 @@ content-type: application/json
 }
 
 ###
+# Create a new user
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "user5",
+    "name": "Norman",
+    "password": "abc123ABC"
+}
+
+###
+# Get the list of all users
+GET http://localhost:3003/api/users
+
+###
