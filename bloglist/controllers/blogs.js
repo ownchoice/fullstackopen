@@ -1,19 +1,25 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+  // const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, _id: 0 })  // Without ID
   response.json(blogs)
 })
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
   if (body.title === undefined || body.url === undefined) {
-    return response.status(400).end()
+    return response.status(400).json({ error: 'Blog title and URL must be provided.' })
   }
-  const blog = new Blog(body)
-  const result = await blog.save()
-  response.status(201).json(result)
+  const users = await User.find({})
+  const randomUser = users[Math.floor(Math.random() * users.length)]
+  const blog = new Blog({...body, user: randomUser.id})
+  const savedBlog = await blog.save()
+  randomUser.blogs = randomUser.blogs.concat(savedBlog)
+  await randomUser.save()
+  response.status(201).json(savedBlog)
 })
 
 blogsRouter.get('/:id', async (request, response) => {

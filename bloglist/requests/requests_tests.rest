@@ -1,16 +1,22 @@
+# Get all blogs
 GET http://localhost:3003/api/blogs
+
+###
+# Get all users
+GET http://localhost:3003/api/users
 
 ###
 DELETE http://localhost:3003/api/blogs/1
 
 ###
+# Create a new blog
 POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "Title THREE",
-    "author": "Author THREE",
-    "url": "https://blog-THREE.com/",
+    "title": "Title",
+    "author": "Author",
+    "url": "https://blog-1.com/",
     "likes": 21
 }
 
@@ -20,8 +26,8 @@ POST http://localhost:3003/api/users
 content-type: application/json
 
 {
-    "username": "user5",
-    "name": "Norman",
+    "username": "user6",
+    "name": "Alex",
     "password": "abc123ABC"
 }
 
@@ -30,3 +36,33 @@ content-type: application/json
 GET http://localhost:3003/api/users
 
 ###
+# Create a new user with a 2 characters long username (should be rejected)
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "ab",
+    "name": "Norman",
+    "password": "abc123ABC"
+}
+
+###
+# Create a new user without password (should be rejected)
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "user5",
+    "name": "Norman"
+}
+
+###
+# Create a new user with a 2 characters long password (should be rejected)
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "user0",
+    "name": "Norman",
+    "password": "12"
+}
