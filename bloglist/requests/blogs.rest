@@ -10,7 +10,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb
 {
     "title": "Title",
     "author": "Author",
-    "url": "https://blog-0001.com/",
+    "url": "https://blog-0002.com/",
     "likes": 1
 }
+###
+
+# Delete a blog created by the user
+DELETE http://localhost:3003/api/blogs/5f812ea8e6a4a4450cda429d
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMjk5Mzg3fQ.dgKyi8VafU1GU0v7mG39dU6rcig_Fdw843KvraYS8Fw
 ###
