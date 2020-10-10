@@ -1,0 +1,15 @@
+# Get all blogs
+GET http://localhost:3003/api/blogs
+###
+
+# Create a new blog
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "Title",
+    "author": "Author",
+    "url": "https://blog-1.com/",
+    "likes": 21
+}
+###

@@ -1,0 +1,20 @@
+
+# Login with a valid user and password
+POST http://localhost:3003/api/login
+content-type: application/json
+
+{
+    "username": "user6",
+    "password": "abc123ABC"
+}
+###
+
+# Login with invalid data
+POST http://localhost:3003/api/login
+content-type: application/json
+
+{
+    "username": "user6",
+    "password": "abc123"
+}
+###
