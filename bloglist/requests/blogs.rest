@@ -5,11 +5,12 @@ GET http://localhost:3003/api/blogs
 # Create a new blog
 POST http://localhost:3003/api/blogs
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMjk4Njg1fQ.W8u_4xkBOt_Uuu-yCZOzob6IyLQD6zJ5uOc516nojeA
 
 {
-    "title": "Title",
-    "author": "Author",
-    "url": "https://blog-1.com/",
-    "likes": 21
+    "title": "Title 00:00",
+    "author": "Author 00:00",
+    "url": "https://blog-0000.com/",
+    "likes": 1
 }
 ###

@@ -4,7 +4,7 @@ POST http://localhost:3003/api/login
 content-type: application/json
 
 {
-    "username": "user6",
+    "username": "blogmaker",
     "password": "abc123ABC"
 }
 ###

@@ -29,12 +29,12 @@ blogsRouter.post('/', async (request, response) => {
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).json({ error: 'Blog title and URL must be provided.' })
   }
-  const users = await User.find({})
-  const randomUser = users[Math.floor(Math.random() * users.length)]
-  const blog = new Blog({...body, user: randomUser.id})
+  // const users = await User.find({})
+  // const randomUser = users[Math.floor(Math.random() * users.length)]
+  const blog = new Blog({...body, user: user.id})
   const savedBlog = await blog.save()
-  randomUser.blogs = randomUser.blogs.concat(savedBlog)
-  await randomUser.save()
+  user.blogs = user.blogs.concat(savedBlog)
+  await user.save()
   response.status(201).json(savedBlog)
 })
 
