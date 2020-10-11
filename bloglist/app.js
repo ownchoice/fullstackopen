@@ -11,6 +11,7 @@ const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 const loginRouter = require('./controllers/login')
+const jwt = require('express-jwt')
 
 logger.info('connecting to', config.MONGODB_URI)
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
@@ -56,7 +57,12 @@ if (process.env.NODE_ENV === 'development') {
   }))
 }
 
-app.use(middleware.tokenExtractor)
+// app.use(middleware.tokenExtractor)
+app.use(jwt({
+  secret: config.SECRET,
+  algorithms: ['HS256'],
+  // credentialsRequired: false
+}))
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)

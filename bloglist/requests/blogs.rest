@@ -5,12 +5,13 @@ GET http://localhost:3003/api/blogs
 # Create a new blog
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMjk5Mzg3fQ.dgKyi8VafU1GU0v7mG39dU6rcig_Fdw843KvraYS8Fw
+# Authorization: Bearer thisIsAnInvalidToken
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMzgwMjkzfQ.0EM8zPk1UVO0BeDOEXncvicJd100Ded_rAS78R8zI_8
 
 {
-    "title": "Title",
+    "title": "Title 11",
     "author": "Author",
-    "url": "https://blog-0002.com/",
+    "url": "https://blog-0011.com/",
     "likes": 1
 }
 ###

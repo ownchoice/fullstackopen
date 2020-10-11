@@ -1,4 +1,6 @@
 const logger = require('./logger')
+// const config = require('./config')
+// const jwt = require('express-jwt')
 
 const requestLogger = (request, response, next) => {
   logger.info('---')
@@ -22,6 +24,8 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: error.message })
   } else if (error.name === 'JsonWebTokenError') {
     return response.status(401).json({ error: 'invalid token' })
+  } else if (error.name === 'UnauthorizedError') {
+    return response.status(401).json({ error: 'invalid token' })
   }
 
   next(error)
@@ -39,9 +43,19 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+const userAuthenticationRequired = (request, response, next) => {
+  // console.log(request.user)
+  if (!request.user) {
+    return res.sendStatus(401).json({ error: 'invalid token' })
+  }
+  next()
+}
+
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  userAuthenticationRequired
 }
