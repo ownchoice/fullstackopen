@@ -35,6 +35,7 @@ blogsRouter.post('/', async (request, response) => {
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).json({ error: 'Blog title and URL must be provided.' })
   }
+
   const blog = new Blog({...body, user: user.id})
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog)

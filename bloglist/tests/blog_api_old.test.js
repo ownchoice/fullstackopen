@@ -6,25 +6,10 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const logger = require('../utils/logger')
-const config = require('../utils/config')
-const jwt = require('jsonwebtoken')
 
-let userForToken
-let token
+// jest.useFakeTimers()
 
-beforeAll(async () => {
-  logger.info('connecting to', config.MONGODB_URI)
-  mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-      logger.info('connected to MongoDB')
-    })
-    .catch((error) => {
-      logger.error('error connecting to MongoDB:', error.message)
-    })
-})
-
-describe('This fucking thing better work', () => {
+describe('test blogs controller', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     await User.deleteMany({})
@@ -33,21 +18,11 @@ describe('This fucking thing better work', () => {
     const user = new User({ username: 'root', passwordHash })
     await user.save()
 
-    userForToken = {
-      username: user.toJSON().username,
-      id: user.toJSON().id,
-    }
-    token = jwt.sign(userForToken, config.SECRET)
-
     const blogObjects = helper.initialBlogs.map(blog => new Blog({ ...blog, user: user.toJSON().id }))
     const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
   })
 
-  test('should A', async () => {
-    expect(8).toBe(8)
-  })
-  
   describe('get blog list', () => {
     test('blogs are returned as json', async () => {
       await api
@@ -68,6 +43,7 @@ describe('This fucking thing better work', () => {
       expect(titles).toContainEqual(randomBlogTitle)  // updated
     })
   })
+  
 
   describe('toJSON should set the id property', () => {
     test('the unique identifier property of the blog posts is named id', async () => {
@@ -75,19 +51,22 @@ describe('This fucking thing better work', () => {
       expect(response.body[0].id).toBeDefined()
     })
   })
-
+  
   describe('add a new blog', () => {
     const newBlog = {
-      title: 'Test title 111',
-      author: 'Test author 111',
-      url: 'https://test-url-111.com/',
-      likes: 22
+      title: 'Book test title',
+      author: 'Book test author',
+      url: 'http://book-test.com/url.html',
+      likes: 99,
     }
 
-    test('should add a blog successfully', async () => {
+    test('should be added successfully', async () => {
       await api
         .post('/api/blogs')
-        .set('Authorization', 'Bearer ' + token)
+        .set({
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMzgwMjkzfQ.0EM8zPk1UVO0BeDOEXncvicJd100Ded_rAS78R8zI_8',
+          Accept: 'application/json'
+        })
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -102,7 +81,10 @@ describe('This fucking thing better work', () => {
     test('should fail with a 401 invalid token', async () => {
       const response = await api
         .post('/api/blogs')
-        .set('Authorization', 'Bearer someInvalidToken')
+        .set({
+          'Authorization': 'Bearer someInvalidToken',
+          Accept: 'application/json'
+        })
         .send(newBlog)
         .expect(401)
         .expect('Content-Type', /application\/json/)
@@ -116,30 +98,35 @@ describe('This fucking thing better work', () => {
         .send(newBlog)
         .expect(401)
         .expect('Content-Type', /application\/json/)
-      expect(response.body.error).toBeDefined()
     })
     
-    describe('likes set to 0 by default', () => {
-      test('should be equal to 0 when not provided', async () => {
-        const newBlog = {
-          title: 'Book test title',
-          author: 'Book test author',
-          url: 'http://book-test.com/url.html',
-        }
-  
-        await api
-          .post('/api/blogs')
-          .set('Authorization', 'Bearer ' + token)
-          .send(newBlog)
-          .expect(201)
-          .expect('Content-Type', /application\/json/)
-        
-        const response = await api.get('/api/blogs')
-        expect(response.body[response.body.length - 1].likes).toBe(0)
-      })
-    })
+    expect(response.body.error).toBeDefined()
   })
 
+
+  describe('likes set to 0 by default', () => {
+    test('should be equal to 0 when not provided', async () => {
+      const newBlog = {
+        title: 'Book test title',
+        author: 'Book test author',
+        url: 'http://book-test.com/url.html',
+      }
+
+      await api
+        .post('/api/blogs')
+        .set({
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMzgwMjkzfQ.0EM8zPk1UVO0BeDOEXncvicJd100Ded_rAS78R8zI_8',
+          Accept: 'application/json'
+        })
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+      
+      const response = await api.get('/api/blogs')
+      expect(response.body[response.body.length - 1].likes).toBe(0)
+    })
+  })
+  
   describe('add a new blog without required fields', () => {
     test('should be rejected because of missing title', async () => {
       const newBlog = {
@@ -149,7 +136,10 @@ describe('This fucking thing better work', () => {
 
       await api
         .post('/api/blogs')
-        .set('Authorization', 'Bearer ' + token)
+        .set({
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMzgwMjkzfQ.0EM8zPk1UVO0BeDOEXncvicJd100Ded_rAS78R8zI_8',
+          Accept: 'application/json'
+        })
         .send(newBlog)
         .expect(400)
     })
@@ -162,7 +152,10 @@ describe('This fucking thing better work', () => {
 
       await api
         .post('/api/blogs')
-        .set('Authorization', 'Bearer ' + token)
+        .set({
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMzgwMjkzfQ.0EM8zPk1UVO0BeDOEXncvicJd100Ded_rAS78R8zI_8',
+          Accept: 'application/json'
+        })
         .send(newBlog)
         .expect(400)
     })
@@ -173,7 +166,10 @@ describe('This fucking thing better work', () => {
       const blogsAtBeginning = await helper.blogsInDb()
       await api
         .delete(`/api/blogs/${blogsAtBeginning[0].id}`)
-        .set('Authorization', 'Bearer ' + token)
+        .set({
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMzgwMjkzfQ.0EM8zPk1UVO0BeDOEXncvicJd100Ded_rAS78R8zI_8',
+          Accept: 'application/json'
+        })
         .expect(204)
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd.length).toBe(blogsAtBeginning.length - 1)
@@ -181,45 +177,42 @@ describe('This fucking thing better work', () => {
 
     test('should fail to delete a blog because of invalid token', async () => {
       const blogsAtBeginning = await helper.blogsInDb()
-      const response = await api
+      await api
         .delete(`/api/blogs/${blogsAtBeginning[0].id}`)
-        .set('Authorization', 'Bearer someInvalidToken')
+        .set({
+          'Authorization': 'Bearer someInvalidToken',
+          Accept: 'application/json'
+        })
         .expect(401)
-      expect(response.body.error).toBeDefined()
-      const blogsAtEnd = await helper.blogsInDb()
-      expect(blogsAtEnd.length).toBe(blogsAtBeginning.length)
     })
 
     test('should fail to delete a blog because of missing token', async () => {
       const blogsAtBeginning = await helper.blogsInDb()
-      const response = await api
+      await api
         .delete(`/api/blogs/${blogsAtBeginning[0].id}`)
         .expect(401)
-      expect(response.body.error).toBeDefined()
-      const blogsAtEnd = await helper.blogsInDb()
-      expect(blogsAtEnd.length).toBe(blogsAtBeginning.length)
     })
   })
-
+  
   describe('update an existing blog', () => {
     test('should be updated successfully', async () => {
       const blogsAtBeginning = await helper.blogsInDb()
       const oldBlog = blogsAtBeginning[0]
-      const updatedBlog = { ...oldBlog,  title: 'Updated title', user: oldBlog.user.toJSON() }
-      // console.log('---------------------------');
-      // console.log(typeof updatedBlog);
-      // console.log(updatedBlog);
-      // console.log('---------------------------');
+      const updatedBlog = { ...oldBlog,  title: 'Updated title' }
       const response = await api
         .put(`/api/blogs/${oldBlog.id}`)
-        .set('Authorization', 'Bearer ' + token)
+        .set({
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dtYWtlciIsImlkIjoiNWY4MTIzMTUwYTgzY2M1MTFjNDg0ZWYxIiwiaWF0IjoxNjAyMzgwMjkzfQ.0EM8zPk1UVO0BeDOEXncvicJd100Ded_rAS78R8zI_8',
+          Accept: 'application/json'
+        })
         .send(updatedBlog)
         .expect(200)
         .expect(updatedBlog)
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd.length).toBe(blogsAtBeginning.length)
       expect(response.body).toEqual(updatedBlog)
-      expect(blogsAtEnd.find(blog => blog.id === oldBlog.id)).toEqual({ ...oldBlog,  title: 'Updated title' })
+      // console.log(response)
+      expect(blogsAtEnd.find(blog => blog.id === oldBlog.id)).toEqual(updatedBlog)
     })
 
     test('should fail to update because of invalid token', async () => {
@@ -228,22 +221,14 @@ describe('This fucking thing better work', () => {
       const updatedBlog = { ...oldBlog,  title: 'Updated title' }
       const response = await api
         .put(`/api/blogs/${oldBlog.id}`)
-        .set('Authorization', 'Bearer someInvalidToken')
+        .set({
+          'Authorization': 'Bearer someInvalidToken',
+          Accept: 'application/json'
+        })
         .send(updatedBlog)
         .expect(401)
-      expect(response.body.error).toBeDefined()
     })
 
-    test('should fail to update because of missing token', async () => {
-      const blogsAtBeginning = await helper.blogsInDb()
-      const oldBlog = blogsAtBeginning[0]
-      const updatedBlog = { ...oldBlog,  title: 'Updated title' }
-      const response = await api
-        .put(`/api/blogs/${oldBlog.id}`)
-        .send(updatedBlog)
-        .expect(401)
-      expect(response.body.error).toBeDefined()
-    })
   })
 
 })
