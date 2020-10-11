@@ -34,9 +34,8 @@ describe('when there is initially some blogs saved', () => {
       const response = await api.get('/api/blogs')
   
       const titles = response.body.map(r => r.title)
-      expect(titles).toContainEqual(
-        'TDD harms architecture'
-      )
+      const randomBlogTitle = (await Blog.findOne({})).toJSON().title
+      expect(titles).toContainEqual(randomBlogTitle)  // updated
     })
   })
   
@@ -49,7 +48,6 @@ describe('when there is initially some blogs saved', () => {
   })
   
   describe('4-10 Blog list tests step3', () => {
-    
     test('should be added', async () => {
       const newBlog = {
         title: 'Book test title',
