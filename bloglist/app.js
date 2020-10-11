@@ -61,7 +61,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(jwt({
   secret: config.SECRET,
   algorithms: ['HS256'],
-  // credentialsRequired: false
+  credentialsRequired: false
 }))
 
 app.use('/api/blogs', blogsRouter)

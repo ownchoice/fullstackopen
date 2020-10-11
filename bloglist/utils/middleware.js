@@ -23,9 +23,9 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   } else if (error.name === 'JsonWebTokenError') {
-    return response.status(401).json({ error: 'invalid token' })
+    return response.status(401).json({ error: 'invalid token UNO' })
   } else if (error.name === 'UnauthorizedError') {
-    return response.status(401).json({ error: 'invalid token' })
+    return response.status(401).json({ error: 'invalid token DOS' })
   }
 
   next(error)
@@ -46,7 +46,7 @@ const tokenExtractor = (request, response, next) => {
 const userAuthenticationRequired = (request, response, next) => {
   // console.log(request.user)
   if (!request.user) {
-    return res.sendStatus(401).json({ error: 'invalid token' })
+    response.sendStatus(401).json({ error: 'invalid token' })
   }
   next()
 }
