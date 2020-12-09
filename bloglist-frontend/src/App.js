@@ -17,6 +17,15 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
   const [notificationMessage, setNotificationMessage] = useState('')
   const [notificationStyle, setNotificationStyle] = useState(successStyle)
   const [notificationLastUpdate, setLastUpdate] = useState(Date.now())
@@ -44,6 +53,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
       blogService.setToken(user.token)
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
       setUser(user)
       setUsername('')
       setPassword('')
@@ -52,6 +62,13 @@ const App = () => {
       console.log(error)
       sendNotification('wrong credentials', errorStyle)
     }
+  }
+
+  const logoutUser = () => {
+    setUser(null)
+    blogService.setToken(null)
+    window.localStorage.removeItem('loggedUser')
+    sendNotification('logged out', successStyle)
   }
 
   const loginForm = () => (
@@ -80,10 +97,16 @@ const App = () => {
 
   const blogsForm = () => (
     <div>
-      <div>logged in as <b>{user.username}</b> <button onClick={() => {
-        setUser(null)
-        sendNotification('logged out', successStyle)
-        }}>logout</button></div>
+      <div>
+        logged in as <b>{user.username}</b>{' '}
+        <button
+          onClick={() => {
+            logoutUser()
+          }}
+        >
+          logout
+        </button>
+      </div>
       <hr />
       <h2>blogs</h2>
       {blogs.map((blog) => (
