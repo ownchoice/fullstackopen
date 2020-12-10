@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import AddBlogForm from './components/AddBlogForm'
 import Notification, {
   successStyle,
   errorStyle,
@@ -13,8 +14,12 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  useEffect(() => {
+  const getBlogs = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
+  }
+
+  useEffect(() => {
+    getBlogs()
   }, [])
 
   useEffect(() => {
@@ -95,6 +100,16 @@ const App = () => {
     </form>
   )
 
+  const addBlog = async (title, author, url) => {
+    try {
+      const newBlog = await blogService.create({ title, author, url })
+      getBlogs()
+      sendNotification('blog added', successStyle)
+    } catch (error) {
+      sendNotification(`error ${error}`, errorStyle)
+    }
+  }
+
   const blogsForm = () => (
     <div>
       <div>
@@ -112,6 +127,7 @@ const App = () => {
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
+      <AddBlogForm addBlog={addBlog} />
     </div>
   )
 
