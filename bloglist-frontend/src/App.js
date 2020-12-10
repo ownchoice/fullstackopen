@@ -54,7 +54,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log('logging with', username, password)
+    // console.log('logging with', username, password)
     try {
       const user = await loginService.login({ username, password })
       blogService.setToken(user.token)
@@ -64,8 +64,8 @@ const App = () => {
       setPassword('')
       sendNotification('login successful', successStyle)
     } catch (error) {
-      console.log(error)
-      sendNotification('wrong credentials', errorStyle)
+      console.log(error.response.data.error)
+      sendNotification(`wrong credentials: ${error.response.data.error}`, errorStyle)
     }
   }
 
@@ -100,13 +100,14 @@ const App = () => {
     </form>
   )
 
-  const addBlog = async (title, author, url) => {
+  const addBlog = async (title, url, author) => {
     try {
-      const newBlog = await blogService.create({ title, author, url })
+      const newBlog = await blogService.create({title: title, url: url, author: author})
       getBlogs()
       sendNotification('blog added', successStyle)
     } catch (error) {
-      sendNotification(`error ${error}`, errorStyle)
+      console.log(error.response.data.error)
+      sendNotification(`error: ${error.response.data.error}`, errorStyle)
     }
   }
 
