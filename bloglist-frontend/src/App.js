@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import BlogList from './components/BlogList'
 import AddBlogForm from './components/AddBlogForm'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 import Notification, {
   successStyle,
   errorStyle,
@@ -65,7 +67,10 @@ const App = () => {
       sendNotification('login successful', successStyle)
     } catch (error) {
       console.log(error.response.data.error)
-      sendNotification(`wrong credentials: ${error.response.data.error}`, errorStyle)
+      sendNotification(
+        `wrong credentials: ${error.response.data.error}`,
+        errorStyle
+      )
     }
   }
 
@@ -77,32 +82,33 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type='text'
-          value={username}
-          name='Username'
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type='password'
-          value={password}
-          name='Password'
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type='submit'>login</button>
-    </form>
+    <Togglable buttonLabel='login'>
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
+    </Togglable>
+  )
+
+  const blogList = () => <BlogList blogList={blogs} />
+
+  const addBlogFormRef = React.createRef()
+  const addNewBlogForm = () => (
+    <Togglable buttonLabel='add blog' ref={addBlogFormRef}>
+      <AddBlogForm addBlog={addBlog} />
+    </Togglable>
   )
 
   const addBlog = async (title, url, author) => {
     try {
-      const newBlog = await blogService.create({title: title, url: url, author: author})
+      const newBlog = await blogService.create({
+        title: title,
+        url: url,
+        author: author,
+      })
       getBlogs()
       sendNotification('blog added', successStyle)
     } catch (error) {
@@ -124,11 +130,8 @@ const App = () => {
         </button>
       </div>
       <hr />
-      <h2>blogs</h2>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
-      <AddBlogForm addBlog={addBlog} />
+
+      {addNewBlogForm()}
     </div>
   )
 
@@ -136,6 +139,7 @@ const App = () => {
     <>
       <Notification message={notificationMessage} style={notificationStyle} />
       {user == null ? loginForm() : blogsForm()}
+      {blogList()}
     </>
   )
 }
