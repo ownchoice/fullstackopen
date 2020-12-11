@@ -139,14 +139,17 @@ const App = () => {
     </div>
   )
 
+  const compareBlogsByLikes = (a, b) => {
+    return a.likes === b.likes ? 0 : a.likes > b.likes ? -1 : 1
+  }
   const blogList = () => (
-    <BlogList blogList={blogs} updateBlog={updateBlog} />
+    <BlogList blogList={blogs.sort(compareBlogsByLikes)} updateBlog={updateBlog} />
   )
 
   return (
     <>
       <Notification message={notificationMessage} style={notificationStyle} />
-      {user == null ? loginForm() : blogsForm()}
+      {user === null ? loginForm() : blogsForm()}
       {blogList()}
     </>
   )
