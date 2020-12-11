@@ -101,7 +101,7 @@ const App = () => {
 
   const addBlog = async (blogObj) => {
     try {
-      const newBlog = await blogService.create(blogObj)
+      await blogService.create(blogObj)
       getBlogs()
       sendNotification('blog added', successStyle)
     } catch (error) {
@@ -112,7 +112,7 @@ const App = () => {
 
   const updateBlog = async (id, blogObj) => {
     try {
-      const updatedBlog = await blogService.update(id, blogObj)
+      await blogService.update(id, blogObj)
       getBlogs()
       sendNotification('blog updated', successStyle)
     } catch (error) {
@@ -134,9 +134,8 @@ const App = () => {
       // console.log('Deletion completed.');
     } else {
       // console.log('Deletion canceled');
-    }    
+    }
   }
-
 
   const blogsForm = () => (
     <div>
@@ -160,7 +159,11 @@ const App = () => {
     return a.likes === b.likes ? 0 : a.likes > b.likes ? -1 : 1
   }
   const blogList = () => (
-    <BlogList blogList={blogs.sort(compareBlogsByLikes)} updateBlog={updateBlog} deleteBlog={deleteBlog} />
+    <BlogList
+      blogList={blogs.sort(compareBlogsByLikes)}
+      updateBlog={updateBlog}
+      deleteBlog={deleteBlog}
+    />
   )
 
   return (
