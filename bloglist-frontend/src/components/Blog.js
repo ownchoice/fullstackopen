@@ -1,25 +1,35 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
   const changeDetailsVisibility = () => {
     setDetailsVisibility(!detailsVisibility)
   }
 
+  const printBlogObj = () => {
+    console.log(blog)
+  }
+
+  const addLikeToBlog = () => {
+    updateBlog(blog.id, {...blog, likes: blog.likes+1})
+  }
+
   return (
-    <>
+    <div>
+      <button onClick={printBlogObj}>print</button>{' '}
       {detailsVisibility ? (
-        <p>
-          <b>{blog.title}</b> by <i>{blog.author}</i> at <u>{blog.url}</u> ({blog.likes} 👍){' '}<button>like</button>{' '}
+        <>
+          <b>{blog.title}</b> by <i>{blog.author}</i> at <u>{blog.url}</u> (
+          {blog.likes} 👍) <button onClick={addLikeToBlog}>like</button>{' '}
           <button onClick={changeDetailsVisibility}>hide details</button>
-        </p>
+        </>
       ) : (
-        <div>
+        <>
           {blog.title}{' '}
           <button onClick={changeDetailsVisibility}>show details</button>
-        </div>
+        </>
       )}
-    </>
+    </div>
   )
 }
 

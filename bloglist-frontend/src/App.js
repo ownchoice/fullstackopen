@@ -92,8 +92,6 @@ const App = () => {
     </Togglable>
   )
 
-  const blogList = () => <BlogList blogList={blogs} />
-
   const addBlogFormRef = React.createRef()
   const addNewBlogForm = () => (
     <Togglable buttonLabel='add blog' ref={addBlogFormRef}>
@@ -101,15 +99,22 @@ const App = () => {
     </Togglable>
   )
 
-  const addBlog = async (title, url, author) => {
+  const addBlog = async (blogObj) => {
     try {
-      const newBlog = await blogService.create({
-        title: title,
-        url: url,
-        author: author,
-      })
+      const newBlog = await blogService.create(blogObj)
       getBlogs()
       sendNotification('blog added', successStyle)
+    } catch (error) {
+      console.log(error.response.data.error)
+      sendNotification(`error: ${error.response.data.error}`, errorStyle)
+    }
+  }
+
+  const updateBlog = async (id, blogObj) => {
+    try {
+      const updatedBlog = await blogService.update(id, blogObj)
+      getBlogs()
+      sendNotification('blog updated', successStyle)
     } catch (error) {
       console.log(error.response.data.error)
       sendNotification(`error: ${error.response.data.error}`, errorStyle)
@@ -132,6 +137,10 @@ const App = () => {
 
       {addNewBlogForm()}
     </div>
+  )
+
+  const blogList = () => (
+    <BlogList blogList={blogs} updateBlog={updateBlog} />
   )
 
   return (

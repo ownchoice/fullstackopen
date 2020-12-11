@@ -19,12 +19,12 @@ const AddBlogForm = ({ addBlog }) => {
 
   const handleBlogSubmit = (event) => {
     event.preventDefault()
-    // addBlog({
-    //   title: newBlogTitle,
-    //   author: newBlogAuthor,
-    //   url: newBlogUrl,
-    // })
-    addBlog(newBlogTitle, newBlogUrl, newBlogAuthor)
+    addBlog({
+      title: newBlogTitle,
+      author: newBlogAuthor,
+      url: newBlogUrl,
+    })
+    // addBlog(newBlogTitle, newBlogUrl, newBlogAuthor)
 
     setNewBlogTitle('')
     setNewBlogAuthor('')
