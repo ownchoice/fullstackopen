@@ -121,6 +121,23 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (id) => {
+    if (window.confirm('Are you sure you want to delete this blog?')) {
+      try {
+        await blogService.deleteBlog(id)
+        getBlogs()
+        sendNotification('blog deleted', successStyle)
+      } catch (error) {
+        console.log(error.response.data.error)
+        sendNotification(`error: ${error.response.data.error}`, errorStyle)
+      }
+      // console.log('Deletion completed.');
+    } else {
+      // console.log('Deletion canceled');
+    }    
+  }
+
+
   const blogsForm = () => (
     <div>
       <div>
@@ -143,7 +160,7 @@ const App = () => {
     return a.likes === b.likes ? 0 : a.likes > b.likes ? -1 : 1
   }
   const blogList = () => (
-    <BlogList blogList={blogs.sort(compareBlogsByLikes)} updateBlog={updateBlog} />
+    <BlogList blogList={blogs.sort(compareBlogsByLikes)} updateBlog={updateBlog} deleteBlog={deleteBlog} />
   )
 
   return (
