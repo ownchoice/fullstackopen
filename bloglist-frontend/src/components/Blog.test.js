@@ -4,43 +4,40 @@ import { render, fireEvent } from '@testing-library/react'
 //import { prettyDOM } from '@testing-library/dom'
 import Blog from './Blog'
 
-test('renders content', () => {
-  const blog = {
-    url: 'https://fullstackopen.com/',
-    title: 'FullStackOpen',
-    author: 'Matthew',
-    likes: 25,
-  }
+describe('<Blog />', () => {
+  let component
+  let blog
 
-  const component = render(<Blog blog={blog} />)
-  const elementByClass = component.container.querySelector('.blog')
-  expect(elementByClass).toBeDefined()
+  beforeEach(() => {
+    blog = {
+      url: 'https://fullstackopen.com/',
+      title: 'FullStackOpen',
+      author: 'Matthew',
+      likes: 25,
+    }
+    component = render(<Blog blog={blog} />)
+  })
 
-  const elementByName = component.container.querySelector('li')
-  expect(elementByName).toBeDefined()
+  test('renders content', () => {
+    const elementByClass = component.container.querySelector('.blog')
+    expect(elementByClass).toBeDefined()
 
-  expect(component.container).toHaveTextContent(blog.title)
-  expect(component.container).toHaveTextContent(blog.author)
-  expect(component.container).not.toHaveTextContent(blog.url)
-  expect(component.container).not.toHaveTextContent(blog.likes)
+    const elementByName = component.container.querySelector('li')
+    expect(elementByName).toBeDefined()
+
+    expect(component.container).toHaveTextContent(blog.title)
+    expect(component.container).toHaveTextContent(blog.author)
+    expect(component.container).not.toHaveTextContent(blog.url)
+    expect(component.container).not.toHaveTextContent(blog.likes)
+  })
+
+  test('clicking the "show details" button shows the URL and like count', async () => {
+    const button = component.getByText('show details')
+    fireEvent.click(button)
+
+    expect(component.container).toHaveTextContent(blog.title)
+    expect(component.container).toHaveTextContent(blog.author)
+    expect(component.container).toHaveTextContent(blog.url)
+    expect(component.container).toHaveTextContent(blog.likes)
+  })
 })
-
-// test('clicking the button calls event handler once', async () => {
-//   const blog = {
-//     url: 'https://fullstackopen.com/',
-//     title: 'FullStackOpen',
-//     author: 'Matthew',
-//     likes: 25,
-//   }
-
-//   const mockHandler = jest.fn()
-
-//   const { getByText } = render(
-//     <Blog blog={blog} toggleImportance={mockHandler} />
-//   )
-
-//   const button = getByText('make not important')
-//   fireEvent.click(button)
-
-//   expect(mockHandler.mock.calls.length).toBe(1)
-// })
