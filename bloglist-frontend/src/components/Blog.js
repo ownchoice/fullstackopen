@@ -6,31 +6,38 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     setDetailsVisibility(!detailsVisibility)
   }
 
-  const printBlogObj = () => {
-    console.log(blog)
-  }
+  // const printBlogObj = () => {
+  //   console.log(blog)
+  // }
 
   const addLikeToBlog = () => {
-    updateBlog(blog.id, {...blog, likes: blog.likes+1})
+    updateBlog(blog.id, { ...blog, likes: blog.likes + 1 })
   }
 
   return (
-    <div>
+    <>
       {/* <button onClick={printBlogObj}>print</button>{' '} */}
       {detailsVisibility ? (
-        <>
-          <b>{blog.title}</b> by <i>{blog.author}</i> at <u>{blog.url}</u> (
-          {blog.likes} 👍) <button onClick={addLikeToBlog}>like</button>{' '}
-          <button onClick={() => {deleteBlog(blog.id)}}>delete</button>
+        <li className='blog'>
+          &quot;<b>{blog.title}</b>&quot; by <i>{blog.author}</i> at{' '}
+          <u>{blog.url}</u> ({blog.likes} 👍){' '}
+          <button onClick={addLikeToBlog}>like</button>{' '}
+          <button
+            onClick={() => {
+              deleteBlog(blog.id)
+            }}
+          >
+            delete
+          </button>
           <button onClick={changeDetailsVisibility}>hide details</button>
-        </>
+        </li>
       ) : (
-        <>
-          {blog.title}{' '}
+        <li className='blog'>
+          &quot;<b>{blog.title}</b>&quot; by <i>{blog.author}</i>{' '}
           <button onClick={changeDetailsVisibility}>show details</button>
-        </>
+        </li>
       )}
-    </div>
+    </>
   )
 }
 
