@@ -3,25 +3,25 @@ const blogList = [
     title: 'Xataka',
     author: 'Webedia',
     url: 'https://www.xataka.com/',
-    likes: 18
+    likes: 18,
   },
   {
     title: 'Genbeta',
     author: 'Webedia',
     url: 'https://www.genbeta.com/',
-    likes: 5
+    likes: 5,
   },
   {
     title: 'Blog sobre Adsense',
     author: 'Bruno Ramos',
     url: 'https://brunoramos.es/',
-    likes: 23
+    likes: 23,
   },
   {
     title: 'Chuiso',
     author: 'Álvaro',
     url: 'https://chuiso.com/',
-    likes: 32
+    likes: 32,
   },
 ]
 
@@ -35,17 +35,6 @@ describe('Blog app', function () {
     }
     cy.request('POST', 'http://localhost:3001/api/users/', user)
     cy.visit('http://localhost:3000')
-  })
-
-  it.only('blogs are sorted by like count', function () {
-    blogList.forEach((blog) =>
-      cy.addBlog({
-        username: 'user01',
-        password: 'testpw',
-        ...blog,
-      })
-    )
-    cy.login({ username: 'user01', password: 'testpw' })
   })
 
   describe('Login form', function () {
@@ -109,7 +98,7 @@ describe('Blog app', function () {
       cy.contains('https://www.xataka.com/')
     })
 
-    it.only('can add many blogs', function () {
+    it('can add many blogs', function () {
       blogList.forEach((blog) =>
         cy.addBlogWithForm({
           title: blog.title,
@@ -191,7 +180,7 @@ describe('Blog app', function () {
       cy.get('html').should('contain', 'hide details')
     })
 
-    it.only('cannot delete another´s user blog', function () {
+    it('cannot delete another´s user blog', function () {
       cy.addBlogWithForm({
         title: 'My nice blog',
         author: 'Me, myself',
@@ -210,5 +199,39 @@ describe('Blog app', function () {
       cy.get('@notificationDiv').should('have.css', 'color', 'rgb(255, 0, 0)')
       cy.get('@notificationDiv').should('have.css', 'border-style', 'solid')
     })
+  })
+
+  it('blogs are sorted by like count', function () {
+    blogList.forEach((blog) =>
+      cy.addBlog({
+        username: 'user01',
+        password: 'testpw',
+        ...blog,
+      })
+    )
+    cy.login({ username: 'user01', password: 'testpw' })
+    cy.get('li[class="blog"] > button').each(($li, index, $lis) => {
+      $li.click()
+    })
+    cy.get('.blog')
+      .each(($li, index, $lis) => {
+        if (index < $lis.length - 1) {
+          // https://stackoverflow.com/questions/14867835/get-substring-between-two-characters-using-javascript
+          // console.log($li[0].innerText)
+          // console.log($li.text())
+          let likesSubstring = $li.text().substring(
+            $li.text().lastIndexOf(' (') + 2,
+            $li.text().lastIndexOf(' 👍)')
+          )
+          let likesSubstring2 = $lis[index + 1].innerText.substring(
+            $lis[index + 1].innerText.lastIndexOf(' (') + 2,
+            $lis[index + 1].innerText.lastIndexOf(' 👍)')
+          )
+          expect(parseInt(likesSubstring)).to.be.greaterThan(parseInt(likesSubstring2))
+        }
+      })
+      .then(($lis) => {
+        expect($lis).to.have.length(blogList.length)
+      })
   })
 })
