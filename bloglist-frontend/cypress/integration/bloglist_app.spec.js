@@ -31,7 +31,8 @@ describe('Blog app', function () {
       cy.get('#password').type('testpw')
       cy.get('#login-button').click()
 
-      cy.contains('login succesful')
+      cy.contains('login successful')
+      cy.get('html').should('contain', 'login successful')
     })
 
     it('fails with wrong credentials', function () {
