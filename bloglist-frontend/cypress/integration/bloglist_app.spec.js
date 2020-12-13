@@ -33,6 +33,7 @@ describe('Blog app', function () {
 
       cy.contains('login successful')
       cy.get('html').should('contain', 'login successful')
+      cy.contains('logged in as')
     })
 
     it('fails with wrong credentials', function () {
@@ -41,7 +42,32 @@ describe('Blog app', function () {
       cy.get('#password').type('wrong')
       cy.get('#login-button').click()
 
+      cy.get('html').should('not.contain', 'logged in as')
       cy.contains('wrong credentials')
+    })
+  })
+
+  describe('when logged in', function () {
+    beforeEach(function () {
+      cy.request('POST', 'http://localhost:3001/api/login', {
+        username: 'user01',
+        password: 'testpw',
+      }).then((response) => {
+        localStorage.setItem('loggedUser', JSON.stringify(response.body))
+        cy.visit('http://localhost:3000')
+      })
+    })
+
+    it.only('a new blog can be added', function () {
+      cy.contains('add blog').click()
+      cy.get('#title').type('Xataka')
+      cy.get('#author').type('webedia')
+      cy.get('#url').type('https://www.xataka.com/')
+      cy.get('#submit-button').click()
+      cy.contains('Xataka')
+      cy.contains('webedia')
+      cy.contains('show details').click()
+      cy.contains('https://www.xataka.com/')
     })
   })
 })
