@@ -93,7 +93,8 @@ describe('Blog app', function () {
         url: 'https://chuiso.com/',
       })
     })
-    it.only('can like a blog', function () {
+
+    it('can like a blog', function () {
       cy.addBlog({
         title: 'Chuiso',
         author: 'Álvaro',
@@ -107,6 +108,61 @@ describe('Blog app', function () {
       cy.contains('(1 👍)')
       cy.contains('like').click()
       cy.contains('(2 👍)')
+    })
+
+    it('the user can delete his blog', function () {
+      cy.addBlog({
+        title: 'My nice blog',
+        author: 'Me, myself',
+        url: 'https://myblog.com/',
+      })
+
+      cy.contains('show details').click()
+
+      cy.contains('delete').click()
+      cy.get('html').should('contain', 'blog deleted')
+      cy.get('html').should('not.contain', 'My nice blog')
+      cy.get('html').should('not.contain', 'Me, myself')
+      cy.get('html').should('not.contain', 'show details')
+    })
+
+    it('the user can cancel the deletion of a blog', function () {
+      cy.addBlog({
+        title: 'My nice blog',
+        author: 'Me, myself',
+        url: 'https://myblog.com/',
+      })
+
+      cy.contains('show details').click()
+
+      // https://docs.cypress.io/api/events/catalog-of-events.html#App-Events
+      // https://stackoverflow.com/questions/59768090/cypress-confirmation-dialog
+      cy.on('window:confirm', () => false)
+
+      cy.contains('delete').click()
+      cy.get('html').should('not.contain', 'blog deleted')
+      cy.get('html').should('contain', 'My nice blog')
+      cy.get('html').should('contain', 'Me, myself')
+      cy.get('html').should('contain', 'hide details')
+    })
+
+    it.only('cannot delete another\'s user blog', function () {
+      cy.addBlog({
+        title: 'My nice blog',
+        author: 'Me, myself',
+        url: 'https://myblog.com/',
+      })
+      cy.createUser({ name: 'Matthew', username: 'matt', password: '123456' })
+      cy.login({ username: 'matt', password: '123456' })
+
+      cy.contains('show details').click()
+      cy.contains('delete').click()
+      cy.get('#notification').should(
+        'contain',
+        'error: only the author can delete a blog'
+      )
+      cy.get('#notification').should('have.css', 'color', 'rgb(255, 0, 0)')
+      cy.get('#notification').should('have.css', 'border-style', 'solid')
     })
   })
 })

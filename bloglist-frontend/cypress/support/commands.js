@@ -42,3 +42,7 @@ Cypress.Commands.add('addBlog', ({ title, author, url }) => {
   cy.get('#submit-button').click()
   cy.contains('cancel').click()
 })
+
+Cypress.Commands.add('createUser', (user) => {
+  cy.request('POST', 'http://localhost:3001/api/users/', user)
+})
