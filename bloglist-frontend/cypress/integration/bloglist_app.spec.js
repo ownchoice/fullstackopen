@@ -1,3 +1,30 @@
+const blogList = [
+  {
+    title: 'Xataka',
+    author: 'Webedia',
+    url: 'https://www.xataka.com/',
+    likes: 18
+  },
+  {
+    title: 'Genbeta',
+    author: 'Webedia',
+    url: 'https://www.genbeta.com/',
+    likes: 5
+  },
+  {
+    title: 'Blog sobre Adsense',
+    author: 'Bruno Ramos',
+    url: 'https://brunoramos.es/',
+    likes: 23
+  },
+  {
+    title: 'Chuiso',
+    author: 'Álvaro',
+    url: 'https://chuiso.com/',
+    likes: 32
+  },
+]
+
 describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -8,6 +35,17 @@ describe('Blog app', function () {
     }
     cy.request('POST', 'http://localhost:3001/api/users/', user)
     cy.visit('http://localhost:3000')
+  })
+
+  it.only('blogs are sorted by like count', function () {
+    blogList.forEach((blog) =>
+      cy.addBlog({
+        username: 'user01',
+        password: 'testpw',
+        ...blog,
+      })
+    )
+    cy.login({ username: 'user01', password: 'testpw' })
   })
 
   describe('Login form', function () {
@@ -71,31 +109,38 @@ describe('Blog app', function () {
       cy.contains('https://www.xataka.com/')
     })
 
-    it('can add many blogs', function () {
-      cy.addBlog({
-        title: 'Xataka',
-        author: 'Webedia',
-        url: 'https://www.xataka.com/',
-      })
-      cy.addBlog({
-        title: 'Genbeta',
-        author: 'Webedia',
-        url: 'https://www.genbeta.com/',
-      })
-      cy.addBlog({
-        title: 'Blog sobre Adsense',
-        author: 'Bruno Ramos',
-        url: 'https://brunoramos.es/',
-      })
-      cy.addBlog({
-        title: 'Chuiso',
-        author: 'Álvaro',
-        url: 'https://chuiso.com/',
-      })
+    it.only('can add many blogs', function () {
+      blogList.forEach((blog) =>
+        cy.addBlogWithForm({
+          title: blog.title,
+          author: blog.author,
+          url: blog.url,
+        })
+      )
+      // cy.addBlogWithForm({
+      //   title: 'Xataka',
+      //   author: 'Webedia',
+      //   url: 'https://www.xataka.com/',
+      // })
+      // cy.addBlogWithForm({
+      //   title: 'Genbeta',
+      //   author: 'Webedia',
+      //   url: 'https://www.genbeta.com/',
+      // })
+      // cy.addBlogWithForm({
+      //   title: 'Blog sobre Adsense',
+      //   author: 'Bruno Ramos',
+      //   url: 'https://brunoramos.es/',
+      // })
+      // cy.addBlogWithForm({
+      //   title: 'Chuiso',
+      //   author: 'Álvaro',
+      //   url: 'https://chuiso.com/',
+      // })
     })
 
     it('can like a blog', function () {
-      cy.addBlog({
+      cy.addBlogWithForm({
         title: 'Chuiso',
         author: 'Álvaro',
         url: 'https://chuiso.com/',
@@ -111,7 +156,7 @@ describe('Blog app', function () {
     })
 
     it('the user can delete his blog', function () {
-      cy.addBlog({
+      cy.addBlogWithForm({
         title: 'My nice blog',
         author: 'Me, myself',
         url: 'https://myblog.com/',
@@ -127,7 +172,7 @@ describe('Blog app', function () {
     })
 
     it('the user can cancel the deletion of a blog', function () {
-      cy.addBlog({
+      cy.addBlogWithForm({
         title: 'My nice blog',
         author: 'Me, myself',
         url: 'https://myblog.com/',
@@ -146,8 +191,8 @@ describe('Blog app', function () {
       cy.get('html').should('contain', 'hide details')
     })
 
-    it.only('cannot delete another\'s user blog', function () {
-      cy.addBlog({
+    it.only('cannot delete another´s user blog', function () {
+      cy.addBlogWithForm({
         title: 'My nice blog',
         author: 'Me, myself',
         url: 'https://myblog.com/',
@@ -157,12 +202,13 @@ describe('Blog app', function () {
 
       cy.contains('show details').click()
       cy.contains('delete').click()
-      cy.get('#notification').should(
+      cy.get('#notification').as('notificationDiv')
+      cy.get('@notificationDiv').should(
         'contain',
         'error: only the author can delete a blog'
       )
-      cy.get('#notification').should('have.css', 'color', 'rgb(255, 0, 0)')
-      cy.get('#notification').should('have.css', 'border-style', 'solid')
+      cy.get('@notificationDiv').should('have.css', 'color', 'rgb(255, 0, 0)')
+      cy.get('@notificationDiv').should('have.css', 'border-style', 'solid')
     })
   })
 })
