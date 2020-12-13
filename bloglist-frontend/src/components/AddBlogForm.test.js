@@ -34,7 +34,7 @@ describe('<AddBlogForm />', () => {
     expect(button).toBeDefined()
     // fireEvent.click(button)
 
-    const formElement = component.container.querySelector('#addBlog')
+    const formElement = component.container.querySelector('#add-blog-form')
     const titleInputElement = component.container.querySelector('#title')
     const authorInputElement = component.container.querySelector('#author')
     const urlInputElement = component.container.querySelector('#url')

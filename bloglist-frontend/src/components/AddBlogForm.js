@@ -35,7 +35,7 @@ const AddBlogForm = ({ addBlog }) => {
     <div>
       <h2>Add a new blog</h2>
 
-      <form onSubmit={handleBlogSubmit} id='addBlog'>
+      <form onSubmit={handleBlogSubmit} id='add-blog-form'>
         <div>
           title:{' '}
           <input
@@ -66,7 +66,7 @@ const AddBlogForm = ({ addBlog }) => {
             onChange={handleChangeUrl}
           />
         </div>
-        <button type='submit'>add</button>
+        <button type='submit' id='submit-button'>add</button>
       </form>
     </div>
   )
