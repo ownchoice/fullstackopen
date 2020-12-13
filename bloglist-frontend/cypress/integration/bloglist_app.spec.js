@@ -49,16 +49,17 @@ describe('Blog app', function () {
 
   describe('when logged in', function () {
     beforeEach(function () {
-      cy.request('POST', 'http://localhost:3001/api/login', {
-        username: 'user01',
-        password: 'testpw',
-      }).then((response) => {
-        localStorage.setItem('loggedUser', JSON.stringify(response.body))
-        cy.visit('http://localhost:3000')
-      })
+      // cy.request('POST', 'http://localhost:3001/api/login', {
+      //   username: 'user01',
+      //   password: 'testpw',
+      // }).then((response) => {
+      //   localStorage.setItem('loggedUser', JSON.stringify(response.body))
+      //   cy.visit('http://localhost:3000')
+      // })
+      cy.login({ username: 'user01', password: 'testpw' })
     })
 
-    it.only('a new blog can be added', function () {
+    it('a new blog can be added', function () {
       cy.contains('add blog').click()
       cy.get('#title').type('Xataka')
       cy.get('#author').type('webedia')
@@ -68,6 +69,44 @@ describe('Blog app', function () {
       cy.contains('webedia')
       cy.contains('show details').click()
       cy.contains('https://www.xataka.com/')
+    })
+
+    it('can add many blogs', function () {
+      cy.addBlog({
+        title: 'Xataka',
+        author: 'Webedia',
+        url: 'https://www.xataka.com/',
+      })
+      cy.addBlog({
+        title: 'Genbeta',
+        author: 'Webedia',
+        url: 'https://www.genbeta.com/',
+      })
+      cy.addBlog({
+        title: 'Blog sobre Adsense',
+        author: 'Bruno Ramos',
+        url: 'https://brunoramos.es/',
+      })
+      cy.addBlog({
+        title: 'Chuiso',
+        author: 'Álvaro',
+        url: 'https://chuiso.com/',
+      })
+    })
+    it.only('can like a blog', function () {
+      cy.addBlog({
+        title: 'Chuiso',
+        author: 'Álvaro',
+        url: 'https://chuiso.com/',
+      })
+
+      cy.contains('show details').click()
+
+      cy.contains('(0 👍)')
+      cy.contains('like').click()
+      cy.contains('(1 👍)')
+      cy.contains('like').click()
+      cy.contains('(2 👍)')
     })
   })
 })
