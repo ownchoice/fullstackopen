@@ -53,13 +53,24 @@ export const addNewAnecdote = (anecdote) => {
   }
 }
 
-const anecdoteReducer = (state = initialState, action) => {
+export const initializeAnecdotes = (anecdotes) => {
+  return {
+    type: 'INIT_ANECDOTES',
+    data: anecdotes,
+  }
+}
+
+
+const anecdoteReducer = (state = [], action) => {
   // console.log('state now: ', state)
   // console.log('action', action)
 
   switch (action.type) {
     case 'RESET_ALL':
-      return initialState.sort(compareVotes)
+      // return initialState.sort(compareVotes)
+      return []
+    case 'INIT_ANECDOTES':
+      return action.data
     case 'ZERO': {
       const id = action.data.id
       const anecdoteToChange = state.find((n) => n.id === id)
