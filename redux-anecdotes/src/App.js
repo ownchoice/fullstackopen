@@ -1,12 +1,27 @@
 import React from 'react'
-// import { useSelector, useDispatch } from 'react-redux'
-// import { addVoteTo, resetVotesOf, addNewAnecdote } from './reducers/anecdoteReducer'
+import { useDispatch } from 'react-redux'
 import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
+import Notification from './components/Notification'
+import { nofiticationChange } from './reducers/notificationReducer'
 
 const App = () => {
+  const dispatch = useDispatch()
+  const setNotification = () => {
+    dispatch(
+      nofiticationChange(
+        `Message updated! ${(100000 * Math.random()).toFixed(0)}`
+      )
+    )
+  }
+
   return (
     <div>
+      <Notification />
+      <p>
+        <button onClick={setNotification}>notification</button>
+      </p>
+
       <h2>Anecdotes</h2>
       <AnecdoteList />
 
