@@ -13,8 +13,8 @@ const AnecdoteForm = () => {
     if (anecdoteContent !== '') {
       // console.log('add new anecdote', anecdoteContent)
       event.target.anecdote.value = ''
-      const newAnecdote = await anecdoteService.createNew(anecdoteContent)
-      dispatch(addNewAnecdote(newAnecdote))
+      // const newAnecdote = await anecdoteService.createNew(anecdoteContent)
+      dispatch(addNewAnecdote(anecdoteContent))
       sendNotification(`you added '${anecdoteContent}'`, dispatch)
     }
   }
