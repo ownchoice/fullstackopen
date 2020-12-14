@@ -32,8 +32,6 @@ const compareVotes = (a, b) => {
   return 0
 }
 
-
-// 6.6: anecdotes, step4
 export const addVoteTo = (id) => {
   return {
     type: 'VOTE',
@@ -69,9 +67,9 @@ const reducer = (state = initialState, action) => {
         ...anecdoteToChange,
         votes: 0,
       }
-      return state.map((anecdote) =>
-        anecdote.id !== id ? anecdote : changedAnecdote
-      ).sort(compareVotes)
+      return state
+        .map((anecdote) => (anecdote.id !== id ? anecdote : changedAnecdote))
+        .sort(compareVotes)
     }
     case 'VOTE': {
       const id = action.data.id
@@ -80,16 +78,18 @@ const reducer = (state = initialState, action) => {
         ...anecdoteToChange,
         votes: anecdoteToChange.votes + 1,
       }
-      return state.map((anecdote) =>
-        anecdote.id !== id ? anecdote : changedAnecdote
-      ).sort(compareVotes)
+      return state
+        .map((anecdote) => (anecdote.id !== id ? anecdote : changedAnecdote))
+        .sort(compareVotes)
     }
     case 'ADD':
-      return state.concat({
-        content: action.data.anecdote,
-        id: getId(),
-        votes: 0,
-      }).sort(compareVotes)
+      return state
+        .concat({
+          content: action.data.anecdote,
+          id: getId(),
+          votes: 0,
+        })
+        .sort(compareVotes)
     default:
       return state.sort(compareVotes)
   }
