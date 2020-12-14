@@ -32,6 +32,8 @@ const compareVotes = (a, b) => {
   return 0
 }
 
+
+// 6.6: anecdotes, step4
 export const addVoteTo = (id) => {
   return {
     type: 'VOTE',
