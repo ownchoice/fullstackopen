@@ -4,7 +4,13 @@ import { addVoteTo, resetVotesOf } from '../reducers/anecdoteReducer'
 import { sendNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) => state.anecdotes)
+  const anecdotes = useSelector(({ anecdotes, filter }) => {
+    if (filter === 'ALL') {
+      return anecdotes
+    } else {
+      return anecdotes.filter((anecdote) => anecdote.content.includes(filter))
+    }
+  })
   const dispatch = useDispatch()
 
   const vote = (id) => {
@@ -32,8 +38,17 @@ const AnecdoteList = () => {
             >
               vote
             </button>
-            <button onClick={() => {setToZero(anecdote.id)
-            sendNotification(`you have reset '${anecdote.content}'`, dispatch)}}>reset</button>
+            <button
+              onClick={() => {
+                setToZero(anecdote.id)
+                sendNotification(
+                  `you have reset '${anecdote.content}'`,
+                  dispatch
+                )
+              }}
+            >
+              reset
+            </button>
           </div>
         </div>
       ))}
