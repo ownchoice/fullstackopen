@@ -19,16 +19,18 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-// export const createAnecdote = (content) => {
-//   return {
-//     type: 'NEW_NOTE',
-//     data: {
-//       content,
-//       important: false,
-//       id: generateId()
-//     }
-//   }
-// }
+const compareVotes = (a, b) => {
+  // a is less than b by some ordering criterion
+  if (a.votes > b.votes) {
+    return -1
+  }
+  // a is greater than b by the ordering criterion
+  if (a.votes < b.votes) {
+    return 1
+  }
+  // a must be equal to b
+  return 0
+}
 
 export const addVoteTo = (id) => {
   return {
@@ -57,7 +59,7 @@ const reducer = (state = initialState, action) => {
 
   switch (action.type) {
     case 'RESET_ALL':
-      return initialState
+      return initialState.sort(compareVotes)
     case 'ZERO': {
       const id = action.data.id
       const anecdoteToChange = state.find((n) => n.id === id)
@@ -67,7 +69,7 @@ const reducer = (state = initialState, action) => {
       }
       return state.map((anecdote) =>
         anecdote.id !== id ? anecdote : changedAnecdote
-      )
+      ).sort(compareVotes)
     }
     case 'VOTE': {
       const id = action.data.id
@@ -78,16 +80,16 @@ const reducer = (state = initialState, action) => {
       }
       return state.map((anecdote) =>
         anecdote.id !== id ? anecdote : changedAnecdote
-      )
+      ).sort(compareVotes)
     }
     case 'ADD':
       return state.concat({
         content: action.data.anecdote,
         id: getId(),
         votes: 0,
-      })
+      }).sort(compareVotes)
     default:
-      return state
+      return state.sort(compareVotes)
   }
 }
 
