@@ -42,6 +42,7 @@ const App = () => {
       setNotificationMessage('')
     }, 5000)
 
+    // this will clear Timeout when component unmount like in willComponentUnmount
     return () => {
       clearTimeout(timer)
     }
