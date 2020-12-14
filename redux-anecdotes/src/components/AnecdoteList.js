@@ -1,6 +1,10 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { addVoteTo, resetVotesOf } from '../reducers/anecdoteReducer'
+import {
+  addVoteTo,
+  resetVotesOf,
+  deleteAnecdote,
+} from '../reducers/anecdoteReducer'
 import { sendNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = () => {
@@ -14,19 +18,18 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
 
   const vote = (anecdote) => {
-    // console.log('vote', anecdote.id)
     dispatch(addVoteTo(anecdote.id))
     sendNotification(`you voted '${anecdote.content}'`, dispatch)
   }
 
   const setToZero = (anecdote) => {
-    // console.log('reset to zero votes', anecdote.id)
     dispatch(resetVotesOf(anecdote.id))
     sendNotification(`you have reset '${anecdote.content}'`, dispatch)
   }
 
-  const deleteAnecdote = (anecdote) => {
-    console.log('delete', anecdote)
+  const removeAnecdote = (anecdote) => {
+    dispatch(deleteAnecdote(anecdote.id))
+    sendNotification(`you deleted '${anecdote.content}'`, dispatch)
   }
 
   return (
@@ -37,8 +40,8 @@ const AnecdoteList = () => {
           <div>
             has {anecdote.votes}{' '}
             <button onClick={() => vote(anecdote)}>vote</button>{' '}
-            <button onClick={() => setToZero(anecdote)}>reset votes</button>{' '}
-            <button onClick={() => deleteAnecdote(anecdote)}>delete</button>
+            <button onClick={() => setToZero(anecdote)}>zero</button>{' '}
+            <button onClick={() => removeAnecdote(anecdote)}>delete</button>
           </div>
         </div>
       ))}
