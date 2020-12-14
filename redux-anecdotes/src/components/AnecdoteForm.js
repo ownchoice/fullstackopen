@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { addNewAnecdote } from './reducers/anecdoteReducer'
+import { addNewAnecdote } from '../reducers/anecdoteReducer'
 
 const AnecdoteForm = (props) => {
   const dispatch = useDispatch()
@@ -17,7 +17,6 @@ const AnecdoteForm = (props) => {
 
   return (
     <>
-      <h2>create new anecdote</h2>
       <form onSubmit={createAnecdote}>
         <div>
           <input name='anecdote' />
