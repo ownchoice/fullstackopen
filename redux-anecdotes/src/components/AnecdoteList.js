@@ -13,14 +13,20 @@ const AnecdoteList = () => {
   })
   const dispatch = useDispatch()
 
-  const vote = (id) => {
-    console.log('vote', id)
-    dispatch(addVoteTo(id))
+  const vote = (anecdote) => {
+    // console.log('vote', anecdote.id)
+    dispatch(addVoteTo(anecdote.id))
+    sendNotification(`you voted '${anecdote.content}'`, dispatch)
   }
 
-  const setToZero = (id) => {
-    console.log('reset to zero votes', id)
-    dispatch(resetVotesOf(id))
+  const setToZero = (anecdote) => {
+    // console.log('reset to zero votes', anecdote.id)
+    dispatch(resetVotesOf(anecdote.id))
+    sendNotification(`you have reset '${anecdote.content}'`, dispatch)
+  }
+
+  const deleteAnecdote = (anecdote) => {
+    console.log('delete', anecdote)
   }
 
   return (
@@ -29,26 +35,10 @@ const AnecdoteList = () => {
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
-            has {anecdote.votes}
-            <button
-              onClick={() => {
-                vote(anecdote.id)
-                sendNotification(`you voted '${anecdote.content}'`, dispatch)
-              }}
-            >
-              vote
-            </button>
-            <button
-              onClick={() => {
-                setToZero(anecdote.id)
-                sendNotification(
-                  `you have reset '${anecdote.content}'`,
-                  dispatch
-                )
-              }}
-            >
-              reset
-            </button>
+            has {anecdote.votes}{' '}
+            <button onClick={() => vote(anecdote)}>vote</button>{' '}
+            <button onClick={() => setToZero(anecdote)}>reset votes</button>{' '}
+            <button onClick={() => deleteAnecdote(anecdote)}>delete</button>
           </div>
         </div>
       ))}
