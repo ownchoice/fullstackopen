@@ -1,9 +1,7 @@
 let nofiticationTimer
 
 export const setNotification = (content, seconds) => {
-  console.log('uno')
   return async (dispatch) => {
-    console.log('dos')
     dispatch({
       type: 'SET_NOTIFICATION',
       message: content,
