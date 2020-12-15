@@ -19,16 +19,6 @@ const AnecdoteList = (props) => {
   //   }
   // })
 
-  const anecdotesToShow = () => {
-    if (props.filter === 'ALL') {
-      return props.anecdotes
-    } else {
-      return props.anecdotes.filter((anecdote) =>
-        anecdote.content.includes(props.filter)
-      )
-    }
-  }
-
   const vote = (anecdote) => {
     dispatch(addVoteTo(anecdote.id))
     dispatch(setNotification(`you voted '${anecdote.content}'`, 3))
@@ -46,7 +36,7 @@ const AnecdoteList = (props) => {
 
   return (
     <>
-      {anecdotesToShow().map((anecdote) => (
+      {props.notes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
@@ -62,9 +52,14 @@ const AnecdoteList = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  return {
-    anecdotes: state.anecdotes,
-    filter: state.filter,
+  if (state.filter === 'ALL') {
+    return { notes: state.anecdotes }
+  } else {
+    return {
+      notes: state.anecdotes.filter((anecdote) =>
+        anecdote.content.includes(state.filter)
+      ),
+    }
   }
 }
 
