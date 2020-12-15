@@ -1,5 +1,4 @@
 import React from 'react'
-// import { useSelector, useDispatch } from 'react-redux'
 import { connect } from 'react-redux'
 import {
   addVoteTo,
@@ -9,16 +8,6 @@ import {
 import { setNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = (props) => {
-  // const dispatch = useDispatch()
-
-  // const anecdotes = useSelector(({ anecdotes, filter }) => {
-  //   if (filter === 'ALL') {
-  //     return anecdotes
-  //   } else {
-  //     return anecdotes.filter((anecdote) => anecdote.content.includes(filter))
-  //   }
-  // })
-
   const vote = (anecdote) => {
     props.addVoteTo(anecdote.id)
     props.setNotification(`you voted '${anecdote.content}'`, 3)
@@ -70,7 +59,6 @@ const mapDispatchToProps = {
   setNotification,
 }
 
-// export default AnecdoteList
 const ConnectedAnecdotes = connect(
   mapStateToProps,
   mapDispatchToProps
