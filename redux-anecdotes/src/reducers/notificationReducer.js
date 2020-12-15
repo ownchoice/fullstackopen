@@ -1,3 +1,4 @@
+// 6.21 anecdotes, the grand finale ALREADY DONE!
 let nofiticationTimer
 
 export const setNotification = (content, seconds) => {
