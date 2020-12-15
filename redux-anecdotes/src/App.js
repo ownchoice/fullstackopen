@@ -4,7 +4,7 @@ import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
 import Filter from './components/Filter'
 import Notification from './components/Notification'
-import { sendNotification } from './reducers/notificationReducer'
+import { setNotification } from './reducers/notificationReducer'
 import { initializeAnecdotes } from './reducers/anecdoteReducer'
 
 const App = () => {
@@ -15,10 +15,7 @@ const App = () => {
   }, [dispatch])
 
   const updateNotification = () => {
-    sendNotification(
-      `Update ${(100000 * Math.random()).toFixed(0)} (shows for 5 seconds)`,
-      dispatch
-    )
+    dispatch(setNotification(`Update ${(100000 * Math.random()).toFixed(0)}`, 3))
   }
 
   return (

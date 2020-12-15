@@ -5,7 +5,7 @@ import {
   resetVotesOf,
   deleteAnecdote,
 } from '../reducers/anecdoteReducer'
-import { sendNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = () => {
   const anecdotes = useSelector(({ anecdotes, filter }) => {
@@ -19,17 +19,17 @@ const AnecdoteList = () => {
 
   const vote = (anecdote) => {
     dispatch(addVoteTo(anecdote.id))
-    sendNotification(`you voted '${anecdote.content}'`, dispatch)
+    dispatch(setNotification(`you voted '${anecdote.content}'`, 3))
   }
 
   const setToZero = (anecdote) => {
     dispatch(resetVotesOf(anecdote.id))
-    sendNotification(`you have reset '${anecdote.content}'`, dispatch)
+    dispatch(setNotification(`you have reset '${anecdote.content}'`, 3))
   }
 
   const removeAnecdote = (anecdote) => {
     dispatch(deleteAnecdote(anecdote.id))
-    sendNotification(`you deleted '${anecdote.content}'`, dispatch)
+    dispatch(setNotification(`you deleted '${anecdote.content}'`, 3))
   }
 
   return (

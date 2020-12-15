@@ -1,39 +1,32 @@
+let nofiticationTimer
+
+export const setNotification = (content, seconds) => {
+  console.log('uno')
+  return async (dispatch) => {
+    console.log('dos')
+    dispatch({
+      type: 'SET_NOTIFICATION',
+      message: content,
+    })
+    clearTimeout(nofiticationTimer)
+    nofiticationTimer = setTimeout(() => {
+      dispatch(
+        dispatch({
+          type: 'SET_NOTIFICATION',
+          message: '',
+        })
+      )
+    }, seconds * 1000)
+  }
+}
+
 const notificationReducer = (state = '', action) => {
-  // console.log(action)
   switch (action.type) {
     case 'SET_NOTIFICATION':
       return action.message
     default:
       return state
   }
-}
-
-export const setNotification = (message) => {
-  return {
-    type: 'SET_NOTIFICATION',
-    message,
-  }
-}
-
-export const removeNotification = () => {
-  return {
-    type: 'SET_NOTIFICATION',
-    message: '',
-  }
-}
-
-let timer
-
-const clearNotificationContent = (dispatch) => {
-  clearTimeout(timer)
-  timer = setTimeout(() => {
-    dispatch(removeNotification())
-  }, 5000)
-}
-
-export const sendNotification = (message, dispatch) => {
-  dispatch(setNotification(message))
-  clearNotificationContent(dispatch)
 }
 
 export default notificationReducer
