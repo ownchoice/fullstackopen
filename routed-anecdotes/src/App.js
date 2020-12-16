@@ -123,6 +123,12 @@ const CreateNew = (props) => {
 
   const history = useHistory()
 
+  const resetInputFields = () => {
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
@@ -144,18 +150,19 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input { ...content}/>
+          <input {...content} />
         </div>
         <div>
           author
-          <input { ...author}/>
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input { ...info}/>
+          <input {...info} />
         </div>
         <button>create</button>
       </form>
+      <button onClick={resetInputFields}>reset</button>
     </div>
   )
 }
