@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import BlogList from './components/BlogList'
 import AddBlogForm from './components/AddBlogForm'
 import LoginForm from './components/LoginForm'
@@ -10,7 +11,7 @@ import Notification, {
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
-import { useDispatch } from 'react-redux'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -24,17 +25,18 @@ const App = () => {
     dispatch(setNotification(message, style, seconds))
   }
 
-  // useEffect(() => {
-  //   dispatch(initializeAnecdotes())
-  // }, [dispatch])
-
-  const getBlogs = () => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }
-
   useEffect(() => {
-    getBlogs()
-  }, [])
+    // blogService.getAll().then((blogs) => dispatch(initializeBlogs(blogs)))
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  // const getBlogs = () => {
+  //   blogService.getAll().then((blogs) => setBlogs(blogs))
+  // }
+
+  // useEffect(() => {
+  //   getBlogs()
+  // }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -108,47 +110,9 @@ const App = () => {
   const addBlogFormRef = React.createRef()
   const addNewBlogForm = () => (
     <Togglable buttonLabel='add blog' ref={addBlogFormRef}>
-      <AddBlogForm addBlog={addBlog} />
+      <AddBlogForm />
     </Togglable>
   )
-
-  const addBlog = async (blogObj) => {
-    try {
-      await blogService.create(blogObj)
-      getBlogs()
-      sendNotification('blog added')
-    } catch (error) {
-      console.log(error.response.data.error)
-      sendNotification(`error: ${error.response.data.error}`, errorStyle)
-    }
-  }
-
-  const updateBlog = async (id, blogObj) => {
-    try {
-      await blogService.update(id, blogObj)
-      getBlogs()
-      sendNotification('blog updated')
-    } catch (error) {
-      console.log(error.response.data.error)
-      sendNotification(`error: ${error.response.data.error}`, errorStyle)
-    }
-  }
-
-  const deleteBlog = async (id) => {
-    if (window.confirm('Are you sure you want to delete this blog?')) {
-      try {
-        await blogService.deleteBlog(id)
-        getBlogs()
-        sendNotification('blog deleted')
-      } catch (error) {
-        console.log(error.response.data.error)
-        sendNotification(`error: ${error.response.data.error}`, errorStyle)
-      }
-      // console.log('Deletion completed.');
-    } else {
-      // console.log('Deletion canceled');
-    }
-  }
 
   const blogsForm = () => (
     <div>
@@ -168,16 +132,7 @@ const App = () => {
     </div>
   )
 
-  const compareBlogsByLikes = (a, b) => {
-    return a.likes === b.likes ? 0 : a.likes > b.likes ? -1 : 1
-  }
-  const blogList = () => (
-    <BlogList
-      blogList={blogs.sort(compareBlogsByLikes)}
-      updateBlog={updateBlog}
-      deleteBlog={deleteBlog}
-    />
-  )
+  const blogList = () => <BlogList />
 
   return (
     <>

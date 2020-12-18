@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, updateBlog, deleteBlog }) => {
+const Blog = ({ blog }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
   const changeDetailsVisibility = () => {
     setDetailsVisibility(!detailsVisibility)
   }
 
-  // const printBlogObj = () => {
-  //   console.log(blog)
-  // }
+  const deleteBlog = () => {}
+  const updateBlog = () => {}
 
   const addLikeToBlog = () => {
     updateBlog(blog.id, { ...blog, likes: blog.likes + 1 })

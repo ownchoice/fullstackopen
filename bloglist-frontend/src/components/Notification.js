@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const Notification = () => {
+const Notification = (props) => {
   const notificationState = useSelector((state) => state.notification)
   if (notificationState.message === null || notificationState.message === '') {
     return null

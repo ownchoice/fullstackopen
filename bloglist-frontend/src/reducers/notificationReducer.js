@@ -1,4 +1,5 @@
 import { successStyle } from '../components/Notification'
+
 let nofiticationTimer
 
 export const setNotification = (content, style = successStyle, seconds = 3) => {
