@@ -33,17 +33,20 @@ blogsRouter.post('/', async (request, response) => {
   const user = await User.findById(request.user.id)
 
   if (body.title === undefined || body.url === undefined) {
-    return response.status(400).json({ error: 'Blog title and URL must be provided.' })
+    return response
+      .status(400)
+      .json({ error: 'Blog title and URL must be provided.' })
   }
 
-  const blog = new Blog({...body, user: user.id})
+  const blog = new Blog({ ...body, user: user.id })
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog)
   await user.save()
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.put('/:id', async (request, response, next) => {
+// blogsRouter.put('/:id', async (request, response, next) => {
+blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
 
   const blog = {
@@ -53,7 +56,11 @@ blogsRouter.put('/:id', async (request, response, next) => {
     likes: body.likes,
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true, runValidators: true, context: 'query' })
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+    runValidators: true,
+    context: 'query',
+  })
   response.json(updatedBlog.toJSON())
 })
 

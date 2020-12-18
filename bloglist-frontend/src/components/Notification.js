@@ -1,10 +1,12 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-const Notification = ({ message, style }) => {
-  if (message === null || message === '') {
+const Notification = () => {
+  const notificationState = useSelector((state) => state.notification)
+  if (notificationState.message === null || notificationState.message === '') {
     return null
   }
-  return <div style={style} id='notification'>{message}</div>
+  return <div style={notificationState.style} id='notification'>{notificationState.message}</div>
 }
 
 const successStyle = {
@@ -17,6 +19,7 @@ const successStyle = {
   padding: 10,
   marginBottom: 10,
 }
+
 const errorStyle = {
   ...successStyle,
   color: 'red',

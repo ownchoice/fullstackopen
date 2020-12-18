@@ -9,12 +9,24 @@ import Notification, {
 } from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { setNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  const dispatch = useDispatch()
+
+  const sendNotification = (message, style = successStyle, seconds = 3) => {
+    dispatch(setNotification(message, style, seconds))
+  }
+
+  // useEffect(() => {
+  //   dispatch(initializeAnecdotes())
+  // }, [dispatch])
 
   const getBlogs = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -33,27 +45,27 @@ const App = () => {
     }
   }, [])
 
-  const [notificationMessage, setNotificationMessage] = useState('')
-  const [notificationStyle, setNotificationStyle] = useState(successStyle)
-  const [notificationLastUpdate, setLastUpdate] = useState(Date.now())
+  // const [notificationMessage, setNotificationMessage] = useState('')
+  // const [notificationStyle, setNotificationStyle] = useState(successStyle)
+  // const [notificationLastUpdate, setLastUpdate] = useState(Date.now())
 
-  const notificationUpdate = () => {
-    const timer = setTimeout(() => {
-      setNotificationMessage('')
-    }, 5000)
+  // const notificationUpdate = () => {
+  //   const timer = setTimeout(() => {
+  //     setNotificationMessage('')
+  //   }, 5000)
 
-    // this will clear Timeout when component unmount like in willComponentUnmount
-    return () => {
-      clearTimeout(timer)
-    }
-  }
-  useEffect(notificationUpdate, [notificationLastUpdate])
+  //   // this will clear Timeout when component unmount like in willComponentUnmount
+  //   return () => {
+  //     clearTimeout(timer)
+  //   }
+  // }
+  // useEffect(notificationUpdate, [notificationLastUpdate])
 
-  const sendNotification = (message, style) => {
-    setNotificationStyle(style)
-    setNotificationMessage(message)
-    setLastUpdate(Date.now())
-  }
+  // const sendNotification = (message, style) => {
+  //   setNotificationStyle(style)
+  //   setNotificationMessage(message)
+  //   setLastUpdate(Date.now())
+  // }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -64,7 +76,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      sendNotification('login successful', successStyle)
+      sendNotification('login successful')
     } catch (error) {
       console.log(error.response.data.error)
       sendNotification(
@@ -78,7 +90,7 @@ const App = () => {
     setUser(null)
     blogService.setToken(null)
     window.localStorage.removeItem('loggedUser')
-    sendNotification('logged out', successStyle)
+    sendNotification('logged out')
   }
 
   const loginForm = () => (
@@ -104,7 +116,7 @@ const App = () => {
     try {
       await blogService.create(blogObj)
       getBlogs()
-      sendNotification('blog added', successStyle)
+      sendNotification('blog added')
     } catch (error) {
       console.log(error.response.data.error)
       sendNotification(`error: ${error.response.data.error}`, errorStyle)
@@ -115,7 +127,7 @@ const App = () => {
     try {
       await blogService.update(id, blogObj)
       getBlogs()
-      sendNotification('blog updated', successStyle)
+      sendNotification('blog updated')
     } catch (error) {
       console.log(error.response.data.error)
       sendNotification(`error: ${error.response.data.error}`, errorStyle)
@@ -127,7 +139,7 @@ const App = () => {
       try {
         await blogService.deleteBlog(id)
         getBlogs()
-        sendNotification('blog deleted', successStyle)
+        sendNotification('blog deleted')
       } catch (error) {
         console.log(error.response.data.error)
         sendNotification(`error: ${error.response.data.error}`, errorStyle)
@@ -169,7 +181,7 @@ const App = () => {
 
   return (
     <>
-      <Notification message={notificationMessage} style={notificationStyle} />
+      <Notification />
       {user === null ? loginForm() : blogsForm()}
       {blogList()}
     </>
