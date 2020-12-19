@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import userService from '../services/user'
+import { Link } from 'react-router-dom'
 
 const Users = (props) => {
   const [users, setUsers] = useState([])
@@ -16,22 +17,30 @@ const Users = (props) => {
   return (
     <div>
       <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <td>User</td>
-            <td>Blogs added</td>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.username}</td>
-              <td>{user.blogs.length}</td>
+      {users.length === 0 ? <p>There was a problem loading the users.</p> : (
+        <table>
+          <thead>
+            <tr>
+              <td>
+                <b>User</b>
+              </td>
+              <td>
+                <b>Blogs added</b>
+              </td>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>
+                  <Link to={`/users/${user.id}`}>{user.username}</Link>
+                </td>
+                <td>{user.blogs.length}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   )
 }

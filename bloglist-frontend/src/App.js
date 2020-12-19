@@ -7,12 +7,14 @@ import Notification from './components/Notification'
 import { initializeBlogs } from './reducers/blogReducer'
 import { Switch, Route } from 'react-router-dom'
 import Users from './components/Users'
+import User from './components/User'
 import Footer from './components/Footer'
 import Header from './components/Header'
 
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
+  // const [usersToShow, setUsersToShow] = useState([])
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -25,19 +27,25 @@ const App = () => {
     </Togglable>
   )
 
-  const blogList = () => <BlogList />
+  // const match = useRouteMatch('/users/:id')
+  // const userToShow = match
+  //   ? usersToShow.find((user) => user.id === Number(match.params.id))
+  //   : null
 
   return (
     <>
       <Notification />
       <Header />
       <Switch>
+        <Route path='/users/:id'>
+          <User />
+        </Route>
         <Route path='/users'>
           <Users />
         </Route>
         <Route path='/'>
           <p>{user === null ? null : addNewBlogForm()}</p>
-          {blogList()}
+          <BlogList />
         </Route>
       </Switch>
       <Footer />
