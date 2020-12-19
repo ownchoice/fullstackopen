@@ -1,10 +1,8 @@
 import React from 'react'
 import Blog from './Blog'
-import { useDispatch, useSelector } from 'react-redux'
-import { addBlog } from '../reducers/blogReducer'
+import { useSelector } from 'react-redux'
 
 const BlogList = ({ updateBlog, deleteBlog }) => {
-  const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
 
   const compareBlogsByLikes = (a, b) => {
