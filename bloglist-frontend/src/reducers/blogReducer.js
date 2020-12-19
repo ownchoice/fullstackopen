@@ -49,6 +49,16 @@ export const addBlog = (blog) => {
   }
 }
 
+// const newBlog = await blogService.create(blog)
+export const addComment = (blog) => {
+  return async (dispatch) => {
+    dispatch({
+      type: 'UPDATE_BLOG',
+      data: blog,
+    })
+  }
+}
+
 // const updatedBlog = await blogService.update(blog.id, blog)
 export const updateBlog = (blog) => {
   return async (dispatch) => {

@@ -3,6 +3,7 @@ import blogService from '../services/blogs'
 import { useParams, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateBlog, initializeBlogs } from '../reducers/blogReducer'
+import AddCommentForm from './AddCommentForm'
 
 const BlogView = (props) => {
   const dispatch = useDispatch()
@@ -34,33 +35,36 @@ const BlogView = (props) => {
       ) : (
         <div>
           <h2>
-            "<span id='comment-title'>{blog.title}</span>" by{' '}
-            <span id='comment-author'>{blog.author}</span>
+            "<span id='blog-title'>{blog.title}</span>" by{' '}
+            <span id='blog-author'>{blog.author}</span>
           </h2>
           <p>
             <a href={blog.url} target='_blank' rel='noopener noreferrer'>
-              <span id='comment-url'>{blog.url}</span>
+              <span id='blog-url'>{blog.url}</span>
             </a>
           </p>
           <p>
-            <span id='comment-likes'>{blog.likes}</span> likes{' '}
+            <span id='blog-likes'>{blog.likes}</span> likes{' '}
             <button onClick={handleLikeToBlog}>like</button>
           </p>
           <p>
             Added by{' '}
             <i>
               <Link to={`/users/${blog.user.id}`}>
-                <span id='comment-user'>{blog.user.name}</span>
+                <span id='blog-user'>{blog.user.name}</span>
               </Link>
             </i>
           </p>
           <h3>Comments</h3>
+          <div>
+            <AddCommentForm idBlog={blog.id} />
+          </div>
           <ul>
             {blog.comments.map((comment) => (
-              <li>
+              <li key={comment.id}>
                 {/* "{comment.body}" at <i>{comment.date.toString('yyyy-MM-dd')}</i> */}
-                "<span id='comment-body'>{comment.body}</span>" at{' '}
-                <span id='comment-date'>{getDateAsString(comment.date)}</span>
+                "<span className='comment-body'>{comment.body}</span>" at{' '}
+                <span className='comment-date'>{getDateAsString(comment.date)}</span>
               </li>
             ))}
           </ul>
