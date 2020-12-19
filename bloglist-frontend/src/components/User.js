@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import userService from '../services/user'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 
 const User = (props) => {
   const [user, setUser] = useState(null)
@@ -28,7 +28,7 @@ const User = (props) => {
               {user.blogs.length === 0 ? (
                 <p>No blogs added</p>
               ) : (
-                user.blogs.map((blog) => <li key={blog.id}>{blog.title}</li>)
+                user.blogs.map((blog) => <li key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></li>)
               )}
             </ul>
           </>

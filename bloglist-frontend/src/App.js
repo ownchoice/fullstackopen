@@ -5,11 +5,12 @@ import AddBlogForm from './components/AddBlogForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import { initializeBlogs } from './reducers/blogReducer'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import Users from './components/Users'
 import User from './components/User'
 import Footer from './components/Footer'
 import Header from './components/Header'
+import BlogView from './components/BlogView'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -37,6 +38,12 @@ const App = () => {
       <Notification />
       <Header />
       <Switch>
+        <Route path='/blogs/:id'>
+          <BlogView />
+        </Route>
+        <Route path='/blogs'>
+          <Redirect to='/' />
+        </Route>
         <Route path='/users/:id'>
           <User />
         </Route>
