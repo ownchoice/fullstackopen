@@ -13,9 +13,24 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.get('/:id', async (request, response) => {
-  const blog = await Blog.findById(request.params.id).populate('user', { username: 1, name: 1 })
+  const blog = await Blog.findById(request.params.id).populate('user', {
+    username: 1,
+    name: 1,
+  })
   if (blog) {
     response.json(blog.toJSON())
+  } else {
+    response.status(404).json({ error: 'Blog not found' })
+  }
+})
+
+blogsRouter.get('/:id/comments', async (request, response) => {
+  const blog = await Blog.findById(request.params.id).populate('user', {
+    username: 1,
+    name: 1,
+  })
+  if (blog) {
+    response.json(blog.toJSON().comments)
   } else {
     response.status(404).json({ error: 'Blog not found' })
   }
@@ -42,7 +57,10 @@ blogsRouter.post('/', async (request, response) => {
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog)
   await user.save()
-  const populatedBlog = await Blog.findById(savedBlog.id).populate('user', { username: 1, name: 1 })
+  const populatedBlog = await Blog.findById(savedBlog.id).populate('user', {
+    username: 1,
+    name: 1,
+  })
   // console.log(savedBlog)
   // console.log(savedBlog.populate('user', { username: 1, name: 1 }))
   response.status(201).json(populatedBlog.toJSON())
@@ -83,6 +101,39 @@ blogsRouter.delete('/:id', async (request, response) => {
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).json({ success: 'blog removed successfully' })
   }
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const body = request.body
+
+  if (body.content === undefined) {
+    return response
+      .status(400)
+      .json({ error: 'Comment content cannot be empty.' })
+  } else if (body.content.length < 5) {
+    return response
+      .status(400)
+      .json({ error: 'Comment content cannot be shorter than 5 characters.' })
+  }
+
+  const originalBlog = (await Blog.findById(request.params.id)).toJSON()
+  const blogWithComment = {
+    ...originalBlog,
+    comments: originalBlog.comments.concat({
+      body: body.content,
+      date: new Date(Date.now()),
+    }),
+  }
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    request.params.id,
+    blogWithComment,
+    {
+      new: true,
+      runValidators: true,
+      context: 'query',
+    }
+  ).populate('user', { username: 1, name: 1 })
+  response.json(updatedBlog.toJSON().comments)
 })
 
 module.exports = blogsRouter

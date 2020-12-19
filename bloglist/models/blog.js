@@ -5,23 +5,36 @@ const blogSchema = new mongoose.Schema({
   title: {
     type: String,
     minlength: 5,
-    required: true
+    required: true,
   },
   author: String,
   url: {
     type: String,
     minlength: 5,
     required: true,
-    unique: true
+    unique: true,
   },
   likes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
+  comments: [
+    {
+      body: {
+        type: String,
+        minlength: 5,
+        required: true,
+      },
+      date: {
+        type: Date,
+        required: true,
+      },
+    },
+  ],
 })
 
 blogSchema.set('toJSON', {
@@ -31,9 +44,15 @@ blogSchema.set('toJSON', {
       delete returnedObject._id
     }
     delete returnedObject.__v
-  }
+    if (returnedObject.comments !== undefined) {
+      returnedObject.comments.forEach((comment) => {
+        comment.id = comment._id.toString()
+        delete comment._id
+      })
+    }
+  },
 })
 
-blogSchema.plugin(uniqueValidator);
+blogSchema.plugin(uniqueValidator)
 
 module.exports = mongoose.model('Blog', blogSchema)
