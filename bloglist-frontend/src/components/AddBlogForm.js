@@ -10,7 +10,6 @@ const AddBlogForm = (props) => {
   const { reset: resetTitle, ...title } = useField('text')
   const { reset: resetAuthor, ...author } = useField('text')
   const { reset: resetUrl, ...url } = useField('text')
-  // const errorState = useSelector((state) => state.error)
   const dispatch = useDispatch()
 
   const handleBlogSubmit = async (event) => {

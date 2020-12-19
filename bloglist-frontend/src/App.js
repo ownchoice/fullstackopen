@@ -14,7 +14,6 @@ import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -26,17 +25,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    // blogService.getAll().then((blogs) => dispatch(initializeBlogs(blogs)))
     dispatch(initializeBlogs())
   }, [dispatch])
-
-  // const getBlogs = () => {
-  //   blogService.getAll().then((blogs) => setBlogs(blogs))
-  // }
-
-  // useEffect(() => {
-  //   getBlogs()
-  // }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -46,28 +36,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  // const [notificationMessage, setNotificationMessage] = useState('')
-  // const [notificationStyle, setNotificationStyle] = useState(successStyle)
-  // const [notificationLastUpdate, setLastUpdate] = useState(Date.now())
-
-  // const notificationUpdate = () => {
-  //   const timer = setTimeout(() => {
-  //     setNotificationMessage('')
-  //   }, 5000)
-
-  //   // this will clear Timeout when component unmount like in willComponentUnmount
-  //   return () => {
-  //     clearTimeout(timer)
-  //   }
-  // }
-  // useEffect(notificationUpdate, [notificationLastUpdate])
-
-  // const sendNotification = (message, style) => {
-  //   setNotificationStyle(style)
-  //   setNotificationMessage(message)
-  //   setLastUpdate(Date.now())
-  // }
 
   const handleLogin = async (event) => {
     event.preventDefault()
