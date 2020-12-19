@@ -13,7 +13,7 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.get('/:id', async (request, response) => {
-  const blog = await Blog.findById(request.params.id)
+  const blog = await Blog.findById(request.params.id).populate('user', { username: 1, name: 1 })
   if (blog) {
     response.json(blog.toJSON())
   } else {
@@ -42,7 +42,10 @@ blogsRouter.post('/', async (request, response) => {
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog)
   await user.save()
-  response.status(201).json(savedBlog)
+  const populatedBlog = await Blog.findById(savedBlog.id).populate('user', { username: 1, name: 1 })
+  // console.log(savedBlog)
+  // console.log(savedBlog.populate('user', { username: 1, name: 1 }))
+  response.status(201).json(populatedBlog.toJSON())
 })
 
 // blogsRouter.put('/:id', async (request, response, next) => {
@@ -60,7 +63,7 @@ blogsRouter.put('/:id', async (request, response) => {
     new: true,
     runValidators: true,
     context: 'query',
-  })
+  }).populate('user', { username: 1, name: 1 })
   response.json(updatedBlog.toJSON())
 })
 

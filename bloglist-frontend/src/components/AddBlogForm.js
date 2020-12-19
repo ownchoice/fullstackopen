@@ -21,6 +21,7 @@ const AddBlogForm = (props) => {
     }
     try {
       const createdBlog = await blogService.create(newBlog)
+      // console.log(createdBlog)
       dispatch(addBlog(createdBlog))
       dispatch(setNotification('blog added'))
       resetTitle()

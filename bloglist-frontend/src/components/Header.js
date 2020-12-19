@@ -86,7 +86,8 @@ const Header = (props) => {
   return (
     <header>
       <div>
-        <Link to='/'>Home</Link> | <Link to='/users'>Users</Link>
+        <Link to='/'>Home</Link> | <Link to='/users'>Users</Link> |{' '}
+        <Link to='/blogs'>Blogs</Link>
       </div>
       <div>{user === null ? loginForm() : loggedUser()}</div>
       <hr />
