@@ -28,10 +28,10 @@ const AddCommentForm = ({ idBlog }) => {
 
   return (
     <div>
-      <h2>Add a new blog</h2>
+      <b>Add a comment</b>
       <form onSubmit={handleBlogSubmit} id='add-blog-form'>
         <div>
-          Comment: <input id='comment' name='Comment' {...comment} />
+          <input id='comment' name='Comment' {...comment} />
         </div>
         <button type='submit' id='submit-comment'>
           add comment
