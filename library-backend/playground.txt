@@ -1,0 +1,68 @@
+query allBooks {
+  allBooks {
+    title
+    author
+    genres
+    published
+  }
+}
+
+query filterBooks1 {
+  allBooks(author: "Martin Fowler", genre: "nosql") {
+    title
+    author
+  }
+}
+
+query filterBooks2 {
+  allBooks(author: "Martin Fowler") {
+    title
+    author
+  }
+}
+
+mutation addBook {
+  addBook(
+    title: "NoSQL Distilled"
+    author: "Martin Fowler"
+    published: 2012
+    genres: ["database", "nosql"]
+  ) {
+    title
+    author
+  }
+}
+
+mutation addBookNewAuthor {
+  addBook(
+    title: "Pimeyden tango"
+    author: "Reijo Mäki"
+    published: 1997
+    genres: ["crime"]
+  ) {
+    title
+    author
+  }
+}
+
+query allAuthors {
+  allAuthors {
+    name
+    born
+    bookCount
+  }
+}
+
+mutation updateAuthor {
+  editAuthor(name: "Joshua Kerievsky", setBornTo: 1958) {
+    name
+    born
+  }
+}
+
+mutation updateAuthorDoesntExist {
+  editAuthor(name: "Doesn't exist", setBornTo: 1958) {
+    name
+    born
+  }
+}
