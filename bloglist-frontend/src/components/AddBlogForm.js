@@ -5,7 +5,7 @@ import { useField } from '../hooks'
 import { errorStyle } from './Notification'
 import { setNotification } from '../reducers/notificationReducer'
 import blogService from '../services/blogs'
-import { Button, Col, Row, Form } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
 
 const AddBlogForm = (props) => {
   const { reset: resetTitle, ...title } = useField('text')
