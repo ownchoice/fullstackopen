@@ -2,8 +2,7 @@ import React from 'react'
 
 const Footer = (props) => {
   return (
-    <div>
-      <hr />
+    <footer className="pt-4 my-md-5 pt-md-5 border-top">
       Made with{' '}
       <span role='img' aria-label='Heart emoji'>
         ❤️
@@ -16,7 +15,7 @@ const Footer = (props) => {
       >
         me
       </a>
-    </div>
+    </footer>
   )
 }
 

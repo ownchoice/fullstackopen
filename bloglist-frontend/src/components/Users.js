@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import userService from '../services/user'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const Users = (props) => {
   const [users, setUsers] = useState([])
@@ -16,9 +17,11 @@ const Users = (props) => {
 
   return (
     <div>
-      <h2>Users</h2>
-      {users.length === 0 ? <p>There was a problem loading the users.</p> : (
-        <table>
+      <h2 className='mb-3'>Users</h2>
+      {users.length === 0 ? (
+        <p>There was a problem loading the users.</p>
+      ) : (
+        <Table striped bordered hover>
           <thead>
             <tr>
               <td>
@@ -39,7 +42,7 @@ const Users = (props) => {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       )}
     </div>
   )

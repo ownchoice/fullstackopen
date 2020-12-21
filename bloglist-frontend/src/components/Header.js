@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import LoginForm from './LoginForm'
@@ -8,6 +7,7 @@ import blogService from '../services/blogs'
 import loginService from '../services/login'
 import { setNotification } from '../reducers/notificationReducer'
 import { setUser as setUserRedux, removeUser } from '../reducers/userReducer'
+import { Button, Row, Col } from 'react-bootstrap'
 
 const Header = (props) => {
   const [username, setUsername] = useState('')
@@ -73,24 +73,21 @@ const Header = (props) => {
   const loggedUser = () => (
     <div>
       logged in as <b>{user.username}</b>{' '}
-      <button
+      <Button
         onClick={() => {
           logoutUser()
         }}
       >
         logout
-      </button>
+      </Button>
     </div>
   )
 
   return (
     <header>
-      <div>
-        <Link to='/'>Home</Link> | <Link to='/users'>Users</Link> |{' '}
-        <Link to='/blogs'>Blogs</Link>
-      </div>
-      <div>{user === null ? loginForm() : loggedUser()}</div>
-      <hr />
+      <Row className='py-2'>
+        <Col>{user === null ? loginForm() : loggedUser()}</Col>
+      </Row>
     </header>
   )
 }

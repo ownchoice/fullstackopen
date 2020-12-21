@@ -4,6 +4,7 @@ import BlogList from './components/BlogList'
 import AddBlogForm from './components/AddBlogForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
+import Navigation from './components/Navigation'
 import { initializeBlogs } from './reducers/blogReducer'
 import { Switch, Route } from 'react-router-dom'
 import Users from './components/Users'
@@ -12,6 +13,7 @@ import Footer from './components/Footer'
 import Header from './components/Header'
 import BlogView from './components/BlogView'
 import BlogListView from './components/BlogListView'
+import { Container } from 'react-bootstrap'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -35,30 +37,33 @@ const App = () => {
   //   : null
 
   return (
-    <div className="container">
+    <>
+      <Navigation />
       <Notification />
-      <Header />
-      <Switch>
-        <Route path='/blogs/:id'>
-          <BlogView />
-        </Route>
-        <Route path='/blogs'>
-          {/* <Redirect to='/' /> */}
-          <BlogListView />
-        </Route>
-        <Route path='/users/:id'>
-          <User />
-        </Route>
-        <Route path='/users'>
-          <Users />
-        </Route>
-        <Route path='/'>
-          <div>{user === null ? null : addNewBlogForm()}</div>
-          <BlogList />
-        </Route>
-      </Switch>
-      <Footer />
-    </div>
+      <Container>
+        <Header />
+        <Switch>
+          <Route path='/blogs/:id'>
+            <BlogView />
+          </Route>
+          <Route path='/blogs'>
+            {/* <Redirect to='/' /> */}
+            <BlogListView />
+          </Route>
+          <Route path='/users/:id'>
+            <User />
+          </Route>
+          <Route path='/users'>
+            <Users />
+          </Route>
+          <Route path='/'>
+            <div>{user === null ? null : addNewBlogForm()}</div>
+            <BlogList />
+          </Route>
+        </Switch>
+        <Footer />
+      </Container>
+    </>
   )
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import blogService from '../services/blogs'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const BlogListView = (props) => {
   const [blogs, setBlogs] = useState([])
@@ -16,11 +17,11 @@ const BlogListView = (props) => {
 
   return (
     <div>
-      <h2>Blogs</h2>
+      <h2 className='mb-3'>Blogs</h2>
       {blogs.length === 0 ? (
         <p>There was a problem loading the blogs.</p>
       ) : (
-        <table>
+        <Table striped bordered hover>
           <thead>
             <tr>
               <td>
@@ -45,7 +46,7 @@ const BlogListView = (props) => {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       )}
     </div>
   )

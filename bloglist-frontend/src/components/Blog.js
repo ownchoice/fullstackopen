@@ -4,6 +4,7 @@ import { deleteBlog, updateBlog } from '../reducers/blogReducer'
 import { errorStyle } from '../components/Notification'
 import { setNotification } from '../reducers/notificationReducer'
 import blogService from '../services/blogs'
+import { Button } from 'react-bootstrap'
 
 const Blog = ({ blog }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false)
@@ -39,18 +40,18 @@ const Blog = ({ blog }) => {
   return (
     <>
       {detailsVisibility ? (
-        <li className='blog'>
+        <>
           &quot;<b>{blog.title}</b>&quot; by <i>{blog.author}</i> at{' '}
-          <u>{blog.url}</u> ({blog.likes} 👍){' '}
-          <button onClick={handleLikeToBlog}>like</button>{' '}
-          <button onClick={handleDeleteBlog}>delete</button>
-          <button onClick={changeDetailsVisibility}>hide details</button>
-        </li>
+          <u>{blog.url}</u> ({blog.likes} 👍)
+          <Button onClick={handleLikeToBlog} className='mx-1'>like</Button>
+          <Button onClick={handleDeleteBlog} className='mx-1'>delete</Button>
+          <Button onClick={changeDetailsVisibility} className='mx-1'>hide details</Button>
+        </>
       ) : (
-        <li className='blog'>
-          &quot;<b>{blog.title}</b>&quot; by <i>{blog.author}</i>{' '}
-          <button onClick={changeDetailsVisibility}>show details</button>
-        </li>
+        <>
+          &quot;<b>{blog.title}</b>&quot; by <i>{blog.author}</i>
+          <Button onClick={changeDetailsVisibility} className='mx-1'>show details</Button>
+        </>
       )}
     </>
   )

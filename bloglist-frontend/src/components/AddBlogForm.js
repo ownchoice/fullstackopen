@@ -5,6 +5,7 @@ import { useField } from '../hooks'
 import { errorStyle } from './Notification'
 import { setNotification } from '../reducers/notificationReducer'
 import blogService from '../services/blogs'
+import { Button, Col, Row, Form } from 'react-bootstrap'
 
 const AddBlogForm = (props) => {
   const { reset: resetTitle, ...title } = useField('text')
@@ -36,23 +37,23 @@ const AddBlogForm = (props) => {
   }
 
   return (
-    <div>
+    <>
       <h2>Add a new blog</h2>
-      <form onSubmit={handleBlogSubmit} id='add-blog-form'>
-        <div>
+      <Form onSubmit={handleBlogSubmit} id='add-blog-form'>
+        <Form.Group controlId='blogTitle'>
           title: <input id='title' name='Title' {...title} />
-        </div>
-        <div>
+        </Form.Group>
+        <Form.Group controlId='blogAuthor'>
           author: <input id='author' name='Author' {...author} />
-        </div>
-        <div>
+        </Form.Group>
+        <Form.Group controlId='blogUrl'>
           url: <input id='url' name='URL' {...url} />
-        </div>
-        <button type='submit' id='submit-button'>
+        </Form.Group>
+        <Button type='submit' id='submit-button'>
           add
-        </button>
-      </form>
-    </div>
+        </Button>
+      </Form>
+    </>
   )
 }
 
