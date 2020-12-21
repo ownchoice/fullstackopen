@@ -35,7 +35,7 @@ const App = () => {
   //   : null
 
   return (
-    <>
+    <div className="container">
       <Notification />
       <Header />
       <Switch>
@@ -58,7 +58,7 @@ const App = () => {
         </Route>
       </Switch>
       <Footer />
-    </>
+    </div>
   )
 }
 
