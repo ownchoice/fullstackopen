@@ -4,9 +4,10 @@ import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
   const [books, setBooks] = useState([])
-  const result = useQuery(ALL_BOOKS, {
-    pollInterval: 5000,
-  })
+  const result = useQuery(ALL_BOOKS)
+  // const result = useQuery(ALL_BOOKS, {
+  //   pollInterval: 5000,
+  // })
 
   useEffect(() => {
     if (result.data) {
@@ -22,8 +23,7 @@ const Books = (props) => {
   }
   return (
     <div>
-      <h2>books</h2>
-
+      <h2>Books</h2>
       <table>
         <tbody>
           <tr>

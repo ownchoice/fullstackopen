@@ -51,7 +51,6 @@ export const EDIT_BIRTH_YEAR = gql`
       id
       name
       born
-      bookCount
     }
   }
 `

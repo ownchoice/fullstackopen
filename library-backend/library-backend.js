@@ -161,6 +161,7 @@ const resolvers = {
         authors = authors.map((author) =>
           author.id === updatedAuthor.id ? updatedAuthor : author
         )
+        // doesn't have book count...
         return updatedAuthor
       } else {
         return null
