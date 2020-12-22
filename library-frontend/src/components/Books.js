@@ -4,7 +4,9 @@ import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
   const [books, setBooks] = useState([])
-  const result = useQuery(ALL_BOOKS)
+  const result = useQuery(ALL_BOOKS, {
+    pollInterval: 5000,
+  })
 
   useEffect(() => {
     if (result.data) {
