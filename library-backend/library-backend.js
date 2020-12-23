@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const Book = require('./models/book')
 const Author = require('./models/author')
 const config = require('./utils/config')
+const book = require('./models/book')
 
 console.log('connecting to', config.MONGODB_URI)
 
@@ -143,11 +144,14 @@ const resolvers = {
   Query: {
     bookCount: () => Book.count(),
     authorCount: () => Author.count(),
-    allBooks: (root, args) => {
-      let booksToReturn = Book.find({})
+    allBooks: async (root, args) => {
+      let booksToReturn = await Book.find({}).populate('author', {
+        name: 1,
+        born: 1,
+      })
       if (args.author) {
         booksToReturn = booksToReturn.filter(
-          (book) => book.author === args.author
+          (book) => book.author.name === args.author
         )
       }
       if (args.genre) {
@@ -155,9 +159,42 @@ const resolvers = {
           book.genres.includes(args.genre)
         )
       }
+
+      // if (args.author) {
+      //   console.log(booksToReturn)
+      //   booksToReturn = booksToReturn.find({
+      //     author: { name: { $eq: args.author } },
+      //   })
+      // }
+      // if (args.genre) {
+      //   booksToReturn = booksToReturn.find({ genres: { $in: [args.genre] } })
+      // }
+      // console.log('booksToReturn ', booksToReturn.length)
       return booksToReturn
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: async () => {
+      let authors = await Author.find({})
+      authors = authors.map((author) => author.toObject({ virtuals: false }))
+      // authors.forEach((author) => console.log(author))
+      // todo
+      // const dos = authors.map()
+      // const bookCount = await Book.find({ author: { $eq: } })
+      // console.log(authors)
+
+      // I would very much prefer to not have to get all the blogs... unnecessary network traffic?
+      const books = await Book.find({}).populate('author', {
+        name: 1,
+        born: 1,
+      })
+      authors = authors.map((author) => {
+        const bookCount = books.filter(
+          (book) => book.author.name === author.name
+        ).length
+        return { ...author, bookCount: bookCount }
+      })
+      console.log(authors)
+      return authors
+    },
   },
   Mutation: {
     addAuthor: (root, args) => {
@@ -166,8 +203,9 @@ const resolvers = {
           invalidArgs: args.name,
         })
       }
-      // if ('author already exists') {
-      //   throw new UserInputError('Name must be unique', {
+      // const authorFound = await Author.findOne({ name: args.name })
+      // if (!authorFound) {
+      //   throw new UserInputError('Author already exists', {
       //     invalidArgs: args.name,
       //   })
       // }
@@ -177,7 +215,7 @@ const resolvers = {
     addBook: async (root, args) => {
       let { author: authorName, ...book } = args
       const authorFound = await Author.findOne({ name: authorName })
-      if (authorFound === null) {
+      if (!authorFound) {
         const newAuthor = new Author({ name: authorName })
         const savedAuthor = await newAuthor.save()
         // console.log('author created', savedAuthor)
@@ -188,24 +226,8 @@ const resolvers = {
       }
       let newBook = new Book({ ...book })
       let savedBook = await newBook.save()
-      // console.log(newBook.populate('author'))
-      // console.log(savedBook.populate('author'))
-      // console.log(
-      //   newBook.populate('author', {
-      //     name: 1,
-      //     born: 1,
-      //   })
-      // )
-      // console.log(
-      //   savedBook.populate('author', {
-      //     name: 1,
-      //     born: 1,
-      //   })
-      // )
-      // console.log(newBook)
-      // console.log(savedBook)
 
-      // shouldn't have to find it!
+      // shouldn't have to find it! I already have it... but I don't know how to populate it
       const finalBook = await Book.findById(savedBook.id).populate('author', {
         name: 1,
         born: 1,
@@ -213,18 +235,38 @@ const resolvers = {
       // console.log(finalBook)
       return finalBook
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((author) => author.name === args.name)
-      if (author) {
-        const updatedAuthor = { ...author, born: args.setBornTo }
-        authors = authors.map((author) =>
-          author.id === updatedAuthor.id ? updatedAuthor : author
-        )
-        // doesn't have book count...
-        return updatedAuthor
-      } else {
-        return null
-      }
+    editAuthor: async (root, args) => {
+      const updatedBlog = Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        {
+          new: true,
+          runValidators: true,
+          context: 'query',
+        }
+      )
+      // const updatedBlog = await Blog.findByIdAndUpdate(
+      //   request.params.id,
+      //   blog,
+      //   {
+      //     new: true,
+      //     runValidators: true,
+      //     context: 'query',
+      //   }
+      // ).populate('user', { username: 1, name: 1 })
+
+      // if (author) {
+      //   const updatedAuthor = { ...author, born: args.setBornTo }
+      //   authors = authors.map((author) =>
+      //     author.id === updatedAuthor.id ? updatedAuthor : author
+      //   )
+      //   // doesn't have book count...
+      //   return updatedAuthor
+      // } else {
+      //   return null
+      // }
+
+      return updatedBlog
     },
   },
 }
