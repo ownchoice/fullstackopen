@@ -198,53 +198,73 @@ const resolvers = {
   },
   Mutation: {
     addAuthor: (root, args) => {
-      if (!args.name) {
-        throw new UserInputError('Name must be provided', {
-          invalidArgs: args.name,
+      try {
+        if (!args.name) {
+          throw new UserInputError('Name must be provided', {
+            invalidArgs: args.name,
+          })
+        }
+        // const authorFound = await Author.findOne({ name: args.name })
+        // if (!authorFound) {
+        //   throw new UserInputError('Author already exists', {
+        //     invalidArgs: args.name,
+        //   })
+        // }
+        const newAuthor = new Author({ ...args })
+        return newAuthor.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
         })
       }
-      // const authorFound = await Author.findOne({ name: args.name })
-      // if (!authorFound) {
-      //   throw new UserInputError('Author already exists', {
-      //     invalidArgs: args.name,
-      //   })
-      // }
-      const newAuthor = new Author({ ...args })
-      return newAuthor.save()
     },
     addBook: async (root, args) => {
-      let { author: authorName, ...book } = args
-      const authorFound = await Author.findOne({ name: authorName })
-      if (!authorFound) {
-        const newAuthor = new Author({ name: authorName })
-        const savedAuthor = await newAuthor.save()
-        // console.log('author created', savedAuthor)
-        book.author = savedAuthor.id
-      } else {
-        book.author = authorFound.id
-        // console.log('author found', authorFound)
-      }
-      let newBook = new Book({ ...book })
-      let savedBook = await newBook.save()
+      try {
+        let { author: authorName, ...book } = args
+        const authorFound = await Author.findOne({ name: authorName })
+        if (!authorFound) {
+          const newAuthor = new Author({ name: authorName })
+          const savedAuthor = await newAuthor.save()
+          // console.log('author created', savedAuthor)
+          book.author = savedAuthor.id
+        } else {
+          book.author = authorFound.id
+          // console.log('author found', authorFound)
+        }
+        let newBook = new Book({ ...book })
+        let savedBook = await newBook.save()
 
-      // shouldn't have to find it! I already have it... but I don't know how to populate it
-      const finalBook = await Book.findById(savedBook.id).populate('author', {
-        name: 1,
-        born: 1,
-      })
-      // console.log(finalBook)
-      return finalBook
+        // shouldn't have to find it! I already have it... but I don't know how to populate it
+        const finalBook = await Book.findById(savedBook.id).populate('author', {
+          name: 1,
+          born: 1,
+        })
+        // console.log(finalBook)
+        return finalBook
+      } catch (error) {
+        console.log('catched')
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
     },
     editAuthor: async (root, args) => {
-      const updatedBlog = Author.findOneAndUpdate(
-        { name: args.name },
-        { born: args.setBornTo },
-        {
-          new: true,
-          runValidators: true,
-          context: 'query',
-        }
-      )
+      try {
+        const updatedBlog = Author.findOneAndUpdate(
+          { name: args.name },
+          { born: args.setBornTo },
+          {
+            new: true,
+            runValidators: true,
+            context: 'query',
+          }
+        )
+        return updatedBlog
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
       // const updatedBlog = await Blog.findByIdAndUpdate(
       //   request.params.id,
       //   blog,
@@ -265,8 +285,6 @@ const resolvers = {
       // } else {
       //   return null
       // }
-
-      return updatedBlog
     },
   },
 }
