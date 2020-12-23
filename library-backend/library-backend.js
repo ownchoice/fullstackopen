@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const Book = require('./models/book')
 const Author = require('./models/author')
 const config = require('./utils/config')
-const book = require('./models/book')
 
 console.log('connecting to', config.MONGODB_URI)
 
@@ -141,6 +140,19 @@ const typeDefs = gql`
 `
 
 const resolvers = {
+  Author: {
+    bookCount: async (root) => {
+      let author = await Author.findOne({ name: root.name })
+      // author = author.toObject({ virtuals: false })
+      const books = await Book.find({}).populate('author', {
+        name: 1,
+        born: 1,
+      })
+      const bookCount = books.filter((book) => book.author.name === author.name)
+        .length
+      return bookCount
+    },
+  },
   Query: {
     bookCount: () => Book.count(),
     authorCount: () => Author.count(),
@@ -174,7 +186,7 @@ const resolvers = {
     },
     allAuthors: async () => {
       let authors = await Author.find({})
-      authors = authors.map((author) => author.toObject({ virtuals: false }))
+      // authors = authors.map((author) => author.toObject({ virtuals: false }))
       // authors.forEach((author) => console.log(author))
       // todo
       // const dos = authors.map()
@@ -182,17 +194,17 @@ const resolvers = {
       // console.log(authors)
 
       // I would very much prefer to not have to get all the blogs... unnecessary network traffic?
-      const books = await Book.find({}).populate('author', {
-        name: 1,
-        born: 1,
-      })
-      authors = authors.map((author) => {
-        const bookCount = books.filter(
-          (book) => book.author.name === author.name
-        ).length
-        return { ...author, bookCount: bookCount }
-      })
-      console.log(authors)
+      // const books = await Book.find({}).populate('author', {
+      //   name: 1,
+      //   born: 1,
+      // })
+      // authors = authors.map((author) => {
+      //   const bookCount = books.filter(
+      //     (book) => book.author.name === author.name
+      //   ).length
+      //   return { ...author, bookCount: bookCount }
+      // })
+      // console.log(authors)
       return authors
     },
   },

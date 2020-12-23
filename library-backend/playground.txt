@@ -1,47 +1,21 @@
+# query bookCount {
+#   bookCount
+# }
+
+# query authorCount {
+#   authorCount
+# }
+
 query allBooks {
   allBooks {
     title
-    author
     genres
     published
-  }
-}
-
-query filterBooks1 {
-  allBooks(author: "Martin Fowler", genre: "nosql") {
-    title
-    author
-  }
-}
-
-query filterBooks2 {
-  allBooks(author: "Martin Fowler") {
-    title
-    author
-  }
-}
-
-mutation addBook {
-  addBook(
-    title: "NoSQL Distilled"
-    author: "Martin Fowler"
-    published: 2012
-    genres: ["database", "nosql"]
-  ) {
-    title
-    author
-  }
-}
-
-mutation addBookNewAuthor {
-  addBook(
-    title: "Pimeyden tango"
-    author: "Reijo Mäki"
-    published: 1997
-    genres: ["crime"]
-  ) {
-    title
-    author
+    author {
+      name
+      born
+      bookCount
+    }
   }
 }
 
@@ -53,16 +27,161 @@ query allAuthors {
   }
 }
 
-mutation updateAuthor {
-  editAuthor(name: "Joshua Kerievsky", setBornTo: 1958) {
+mutation addAuthor {
+  addAuthor(name: "Author 3", born: 1992) {
     name
     born
+    bookCount
   }
 }
 
-mutation updateAuthorDoesntExist {
-  editAuthor(name: "Doesn't exist", setBornTo: 1958) {
-    name
-    born
-  }
-}
+# mutation addBook {
+#   addBook(
+#     title: "NoSQL Distilled 7"
+#     author: "Martin Fowler"
+#     published: 2015
+#     genres: ["database", "nosql"]
+#   ) {
+#     title
+#     published
+#     genres
+#   }
+# }
+
+# mutation addBook2 {
+#   addBook(
+#     title: "Book title 4"
+#     author: "Book author"
+#     published: 2002
+#     genres: ["database"]
+#   ) {
+#     title
+#     published
+#     genres
+#     author {
+#       name
+#       born
+#     }
+#   }
+# }
+
+# query filterBooks1 {
+#   allBooks(author: "Martin Fowler", genre: "nosql") {
+#     title
+#     genres
+#     published
+#     author {
+#       name
+#       born
+#     }
+#   }
+# }
+
+# query filterBooks2 {
+#   allBooks(author: "Martin Fowler") {
+#     title
+#     genres
+#     published
+#     author {
+#       name
+#       born
+#     }
+#   }
+# }
+
+# query filterBooks3 {
+#   allBooks(genre: "database") {
+#     title
+#     genres
+#     published
+#     author {
+#       name
+#       born
+#     }
+#   }
+# }
+
+# query allAuthors1 {
+#   allAuthors {
+#     name
+#     bookCount
+#   }
+# }
+
+# query allAuthorsDetailed {
+#   allAuthors {
+#     name
+#     born
+#     bookCount
+#   }
+# }
+
+# mutation addBookNewAuthor {
+#   addBook(
+#     title: "Pimeyden tango"
+#     author: "Reijo Mäki"
+#     published: 1997
+#     genres: ["crime"]
+#   ) {
+#     title
+#     author {
+#       name
+#       born
+#     }
+#   }
+# }
+
+# query allBooksAlt {
+#   allBooks {
+#     title
+#     author {
+#       name
+#       born
+#     }
+#     genres
+#     published
+#   }
+# }
+
+# query allAuthorsAlt {
+#   allAuthors {
+#     name
+#     born
+#     bookCount
+#   }
+# }
+
+# mutation updateAuthor {
+#   editAuthor(name: "Author 2", setBornTo: 1958) {
+#     name
+#     born
+#   }
+# }
+
+# mutation updateAuthorDoesntExist {
+#   editAuthor(name: "Doesn't exist", setBornTo: 1958) {
+#     name
+#     born
+#   }
+# }
+
+
+# mutation addAuthorError {
+#   addAuthor(name: "A", born: 1992) {
+#     name
+#     born
+#   }
+# }
+
+# mutation addBookError {
+#   addBook(
+#     title: "A"
+#     author: "Martin Fowler"
+#     published: 2015
+#     genres: ["database", "nosql"]
+#   ) {
+#     title
+#     published
+#     genres
+#   }
+# }
