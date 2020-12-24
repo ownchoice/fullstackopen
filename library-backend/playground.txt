@@ -185,3 +185,30 @@ mutation addAuthor {
 #     genres
 #   }
 # }
+
+
+query getUserList {
+  allUsers {
+    username
+    id
+    favoriteGenre
+  }
+}
+
+# {
+#   "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIwMSIsImlkIjoiNWZlM2RlNTk4MzU2ZDUzOTI0MDMwZjY4IiwiaWF0IjoxNjA4NzcwMTQyfQ.hpTO-oW0BHQnOY00u1DQtkAXj3PfzTFL8of7IslhkwA"
+# }
+
+mutation addNewUser {
+  createUser(username: "user04", favoriteGenre: "thriller") {
+    username
+    id
+    favoriteGenre
+  }
+}
+
+mutation userLogin {
+  login(username: "user01", password: "unsecurePassword") {
+    value
+  }
+}

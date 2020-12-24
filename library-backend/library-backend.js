@@ -1,9 +1,13 @@
 const { ApolloServer, gql, UserInputError } = require('apollo-server')
-const { v1: uuid } = require('uuid')
+// const { v1: uuid } = require('uuid')
 const mongoose = require('mongoose')
 const Book = require('./models/book')
 const Author = require('./models/author')
+const User = require('./models/user')
 const config = require('./utils/config')
+const jwt = require('jsonwebtoken')
+
+const JWT_SECRET = config.SECRET
 
 console.log('connecting to', config.MONGODB_URI)
 
@@ -46,11 +50,6 @@ let authors = [
     id: 'afa5b6f3-344d-11e9-a414-719c6709cf3e',
   },
 ]
-
-/*
- * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
- * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
- */
 
 let books = [
   {
@@ -125,6 +124,8 @@ const typeDefs = gql`
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
+    allUsers: [User!]!
   }
 
   type Mutation {
@@ -136,6 +137,18 @@ const typeDefs = gql`
       genres: [String]
     ): Book
     editAuthor(name: String!, setBornTo: Int!): Author
+    createUser(username: String!, favoriteGenre: String!): User
+    login(username: String!, password: String!): Token
+  }
+
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
   }
 `
 
@@ -143,7 +156,6 @@ const resolvers = {
   Author: {
     bookCount: async (root) => {
       let author = await Author.findOne({ name: root.name })
-      // author = author.toObject({ virtuals: false })
       const books = await Book.find({}).populate('author', {
         name: 1,
         born: 1,
@@ -171,57 +183,31 @@ const resolvers = {
           book.genres.includes(args.genre)
         )
       }
-
-      // if (args.author) {
-      //   console.log(booksToReturn)
-      //   booksToReturn = booksToReturn.find({
-      //     author: { name: { $eq: args.author } },
-      //   })
-      // }
-      // if (args.genre) {
-      //   booksToReturn = booksToReturn.find({ genres: { $in: [args.genre] } })
-      // }
-      // console.log('booksToReturn ', booksToReturn.length)
       return booksToReturn
     },
     allAuthors: async () => {
       let authors = await Author.find({})
-      // authors = authors.map((author) => author.toObject({ virtuals: false }))
-      // authors.forEach((author) => console.log(author))
-      // todo
-      // const dos = authors.map()
-      // const bookCount = await Book.find({ author: { $eq: } })
-      // console.log(authors)
-
-      // I would very much prefer to not have to get all the blogs... unnecessary network traffic?
-      // const books = await Book.find({}).populate('author', {
-      //   name: 1,
-      //   born: 1,
-      // })
-      // authors = authors.map((author) => {
-      //   const bookCount = books.filter(
-      //     (book) => book.author.name === author.name
-      //   ).length
-      //   return { ...author, bookCount: bookCount }
-      // })
-      // console.log(authors)
       return authors
+    },
+    me: (root, args, context) => {
+      return context.currentUser
+    },
+    allUsers: (root, args, context) => {
+      const users = User.find({})
+      return users
     },
   },
   Mutation: {
-    addAuthor: (root, args) => {
+    addAuthor: (root, args, context) => {
+      if (!context.currentUser) {
+        throw new UserInputError('must be logged in')
+      }
       try {
         if (!args.name) {
           throw new UserInputError('Name must be provided', {
             invalidArgs: args.name,
           })
         }
-        // const authorFound = await Author.findOne({ name: args.name })
-        // if (!authorFound) {
-        //   throw new UserInputError('Author already exists', {
-        //     invalidArgs: args.name,
-        //   })
-        // }
         const newAuthor = new Author({ ...args })
         return newAuthor.save()
       } catch (error) {
@@ -230,18 +216,19 @@ const resolvers = {
         })
       }
     },
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new UserInputError('must be logged in')
+      }
       try {
         let { author: authorName, ...book } = args
         const authorFound = await Author.findOne({ name: authorName })
         if (!authorFound) {
           const newAuthor = new Author({ name: authorName })
           const savedAuthor = await newAuthor.save()
-          // console.log('author created', savedAuthor)
           book.author = savedAuthor.id
         } else {
           book.author = authorFound.id
-          // console.log('author found', authorFound)
         }
         let newBook = new Book({ ...book })
         let savedBook = await newBook.save()
@@ -260,7 +247,10 @@ const resolvers = {
         })
       }
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new UserInputError('must be logged in')
+      }
       try {
         const updatedBlog = Author.findOneAndUpdate(
           { name: args.name },
@@ -277,26 +267,37 @@ const resolvers = {
           invalidArgs: args,
         })
       }
-      // const updatedBlog = await Blog.findByIdAndUpdate(
-      //   request.params.id,
-      //   blog,
-      //   {
-      //     new: true,
-      //     runValidators: true,
-      //     context: 'query',
-      //   }
-      // ).populate('user', { username: 1, name: 1 })
+    },
+    createUser: (root, args) => {
+      const user = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre,
+      })
+      if (!args.favoriteGenre) {
+        throw new UserInputError('favoriteGenre must be provided', {
+          invalidArgs: 'favoriteGenre',
+        })
+      }
+      return user.save().catch((error) => {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      })
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
 
-      // if (author) {
-      //   const updatedAuthor = { ...author, born: args.setBornTo }
-      //   authors = authors.map((author) =>
-      //     author.id === updatedAuthor.id ? updatedAuthor : author
-      //   )
-      //   // doesn't have book count...
-      //   return updatedAuthor
-      // } else {
-      //   return null
-      // }
+      if (!user || args.password !== 'unsecurePassword') {
+        throw new UserInputError('wrong credentials')
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+        // favoriteGenre: user.favoriteGenre,
+      }
+
+      return { value: jwt.sign(userForToken, JWT_SECRET) }
     },
   },
 }
@@ -304,6 +305,14 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+  },
 })
 
 server.listen().then(({ url }) => {

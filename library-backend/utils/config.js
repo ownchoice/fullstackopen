@@ -1,4 +1,10 @@
-require('dotenv').config()
+const result = require('dotenv').config()
+
+if (result.error) {
+  throw result.error
+}
+
+// console.log(result.parsed)
 
 const PORT = process.env.PORT
 let MONGODB_URI = process.env.MONGODB_URI
