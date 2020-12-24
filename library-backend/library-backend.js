@@ -220,6 +220,11 @@ const resolvers = {
       if (!context.currentUser) {
         throw new UserInputError('must be logged in')
       }
+      if (args.title.length < 2) {
+        throw new UserInputError(
+          'book title must be at least 2 characters long'
+        )
+      }
       try {
         let { author: authorName, ...book } = args
         const authorFound = await Author.findOne({ name: authorName })

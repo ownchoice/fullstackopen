@@ -18,13 +18,18 @@ const AuthorBirthYear = (props) => {
     refetchQueries: [{ query: ALL_AUTHORS }],
     onError: (error) => {
       console.log(error.graphQLErrors[0].message)
-      // console.log(error.graphQLErrors[0])
+      console.log(error)
+    },
+    onCompleted: (data) => {
+      setSelectedAuthor(authors[0].name)
+      setBirthyear('')
+      console.log(data.editAuthor)
     },
   })
 
   const submit = async (event) => {
     event.preventDefault()
-    console.log(`selectedAuthor: "${selectedAuthor}"`)
+    // console.log(`selectedAuthor: "${selectedAuthor}"`)
 
     if (selectedAuthor === '') {
       alert('An author must be selected.')
@@ -37,9 +42,6 @@ const AuthorBirthYear = (props) => {
     updateAuthorBirthyear({
       variables: { name: selectedAuthor, born: parseInt(birthyear, 10) },
     })
-
-    setSelectedAuthor('')
-    setBirthyear('')
   }
 
   useEffect(() => {

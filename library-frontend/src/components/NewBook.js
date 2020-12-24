@@ -9,10 +9,19 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+  // https://www.apollographql.com/docs/react/data/mutations/#tracking-loading-and-error-states
   const [addBook] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
+      console.log(error.graphQLErrors[0].message, error)
+    },
+    onCompleted: (data) => {
+      console.log('book added', data.addBook)
+      setTitle('')
+      setPublished('')
+      setAuhtor('')
+      setGenres([])
+      setGenre('')
     },
   })
 
@@ -23,16 +32,22 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
 
-    // console.log('add book...')
-    addBook({
-      variables: { title, author, published: parseInt(published, 10), genres },
-    })
+    if (title.length < 2) {
+      alert('book title must be at least 2 characters long')
+      return null
+    }
 
-    setTitle('')
-    setPublished('')
-    setAuhtor('')
-    setGenres([])
-    setGenre('')
+    const book = {
+      title,
+      author: author.length > 0 ? author : null,
+      published: published.length > 0 ? parseInt(published, 10) : null,
+      genres: genres.length > 0 ? genres : null,
+    }
+    addBook({
+      variables: {
+        ...book,
+      },
+    })
   }
 
   const addGenre = () => {
