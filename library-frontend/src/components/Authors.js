@@ -4,7 +4,11 @@ import { ALL_AUTHORS } from '../queries'
 
 const Authors = (props) => {
   const [authors, setAuthors] = useState([])
-  const result = useQuery(ALL_AUTHORS)
+  const result = useQuery(ALL_AUTHORS, {
+    onError: (error) => {
+      console.log(error.graphQLErrors[0].message)
+    },
+  })
   // const result = useQuery(ALL_AUTHORS, {
   //   pollInterval: 5000,
   // })
