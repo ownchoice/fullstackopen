@@ -211,3 +211,11 @@ mutation userLogin {
     value
   }
 }
+
+query me {
+  me {
+    username
+    favoriteGenre
+    id
+  }
+}
