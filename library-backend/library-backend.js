@@ -241,7 +241,7 @@ const resolvers = {
         // console.log(finalBook)
         return finalBook
       } catch (error) {
-        console.log('catched')
+        console.log('catched', error)
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
