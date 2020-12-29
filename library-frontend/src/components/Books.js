@@ -1,38 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useLazyQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
-  const [books, setBooks] = useState([])
   const [selectedGenre, setSelectedGenre] = useState('')
   let genres = new Set()
-  books.forEach((book) => book.genres.forEach((genre) => genres.add(genre)))
+  props.books.forEach((book) =>
+    book.genres.forEach((genre) => genres.add(genre))
+  )
 
-  const [loadBooks, { called, loading, refetch }] = useLazyQuery(ALL_BOOKS, {
+  const [loadBooks] = useLazyQuery(ALL_BOOKS, {
     variables: {
       genre: selectedGenre === '' ? null : selectedGenre,
-      pollInterval: 500,
     },
     onError: (error) => {
       console.log(error)
       // console.log(error.graphQLErrors[0].message)
     },
-    onCompleted: (data) => {
-      setBooks(data.allBooks)
-    },
   })
-
-  useEffect(() => {
-    if (!called) {
-      loadBooks()
-    }
-  }, [called, loadBooks])
 
   if (!props.show) {
     return null
-  }
-  if (loading) {
-    return <div>loading...</div>
   }
   return (
     <div>
@@ -44,7 +32,7 @@ const Books = (props) => {
             <th>Author</th>
             <th>Published</th>
           </tr>
-          {books.map((book) =>
+          {props.books.map((book) =>
             selectedGenre === '' ||
             (book.genres && book.genres.includes(selectedGenre)) ? (
               <tr key={book.title}>
@@ -63,7 +51,7 @@ const Books = (props) => {
             key={`${genre}${Math.random().toString()}`}
             onClick={() => {
               setSelectedGenre(genre)
-              refetch()
+              loadBooks()
             }}
           >
             {genre}
@@ -72,7 +60,7 @@ const Books = (props) => {
         <button
           onClick={() => {
             setSelectedGenre('')
-            refetch()
+            loadBooks()
           }}
         >
           all

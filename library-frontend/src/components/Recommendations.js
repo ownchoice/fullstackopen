@@ -1,48 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { useLazyQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import React from 'react'
 
 const Recommendations = (props) => {
-  const [books, setBooks] = useState([])
-  // const [currentUser, setCurrentUser] = useState(null)
-
-  const [loadBooks, { called, loading }] = useLazyQuery(ALL_BOOKS, {
-    onError: (error) => {
-      console.log(error)
-      // console.log(error.graphQLErrors[0].message)
-    },
-    onCompleted: (data) => {
-      setBooks(data.allBooks)
-    },
-  })
-
-  // const resultMe = useQuery(ME, {
-  //   onError: (error) => {
-  //     console.log(error.graphQLErrors[0].message)
-  //   },
-  // })
-
-  // const result = useQuery(ALL_BOOKS, {
-  //   pollInterval: 5000,
-  // })
-
-  useEffect(() => {
-    if (!called) {
-      loadBooks()
-    }
-  }, [called, loadBooks])
-
-  // useEffect(() => {
-  //   if (resultMe.data) {
-  //     setCurrentUser(resultMe.data.me)
-  //   }
-  // }, [resultMe])
-
   if (!props.show) {
     return null
-  }
-  if (loading) {
-    return <div>loading...</div>
   }
   return (
     <div>
@@ -58,7 +18,7 @@ const Recommendations = (props) => {
             <th>Author</th>
             <th>Published</th>
           </tr>
-          {books.map((book) =>
+          {props.books.map((book) =>
             book.genres.includes(props.currentUser.favoriteGenre) ? (
               <tr key={book.title}>
                 <td>{book.title}</td>

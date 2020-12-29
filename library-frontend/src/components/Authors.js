@@ -1,30 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS } from '../queries'
+import React from 'react'
 
 const Authors = (props) => {
-  const [authors, setAuthors] = useState([])
-  const result = useQuery(ALL_AUTHORS, {
-    onError: (error) => {
-      console.log(error)
-      // console.log(error.graphQLErrors[0].message)
-    },
-  })
-  // const result = useQuery(ALL_AUTHORS, {
-  //   pollInterval: 5000,
-  // })
-
-  useEffect(() => {
-    if (result.data) {
-      setAuthors(result.data.allAuthors)
-    }
-  }, [result])
-
   if (!props.show) {
     return null
-  }
-  if (result.loading) {
-    return <div>loading...</div>
   }
   return (
     <div>
@@ -36,7 +14,7 @@ const Authors = (props) => {
             <th>Born</th>
             <th>Books</th>
           </tr>
-          {authors.map((a) => (
+          {props.authors.map((a) => (
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>

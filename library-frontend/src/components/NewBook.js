@@ -16,6 +16,9 @@ const NewBook = (props) => {
       console.log(error)
       // console.log(error.graphQLErrors[0].message)
     },
+    update: (store, response) => {
+      props.updateCacheWithBook(response.data.addBook)
+    },
     onCompleted: (data) => {
       console.log('book added', data.addBook)
       setTitle('')
