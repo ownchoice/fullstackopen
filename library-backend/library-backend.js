@@ -242,6 +242,7 @@ const resolvers = {
           const newAuthor = new Author({ name: authorName })
           const savedAuthor = await newAuthor.save()
           book.author = savedAuthor.id
+          pubsub.publish('AUTHOR_ADDED', { authorAdded: savedAuthor })
         } else {
           book.author = authorFound.id
         }

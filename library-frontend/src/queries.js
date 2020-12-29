@@ -22,6 +22,14 @@ const AUTHOR_DETAILS = gql`
   }
 `
 
+const USER_DETAILS = gql`
+  fragment UserDetails on User {
+    username
+    favoriteGenre
+    id
+  }
+`
+
 export const ALL_AUTHORS = gql`
   query getAllAuthors {
     allAuthors {
@@ -79,9 +87,35 @@ export const LOGIN = gql`
 export const ME = gql`
   query me {
     me {
-      username
-      favoriteGenre
-      id
+      ...UserDetails
     }
   }
+  ${USER_DETAILS}
+`
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
+`
+
+export const USER_ADDED = gql`
+  subscription {
+    userAdded {
+      ...UserDetails
+    }
+  }
+  ${USER_DETAILS}
+`
+
+export const AUTHOR_ADDED = gql`
+  subscription {
+    authorAdded {
+      ...AuthorDetails
+    }
+  }
+  ${AUTHOR_DETAILS}
 `
