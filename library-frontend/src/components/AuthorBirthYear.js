@@ -10,15 +10,16 @@ const AuthorBirthYear = (props) => {
 
   const result = useQuery(ALL_AUTHORS, {
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
+      console.log(error)
+      // console.log(error.graphQLErrors[0].message)
     },
   })
 
   const [updateAuthorBirthyear] = useMutation(EDIT_BIRTH_YEAR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
       console.log(error)
+      // console.log(error.graphQLErrors[0].message)
     },
     onCompleted: (data) => {
       setSelectedAuthor(authors[0].name)

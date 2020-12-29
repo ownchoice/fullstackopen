@@ -1,50 +1,55 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery } from '@apollo/client'
+import { useQuery, useLazyQuery } from '@apollo/client'
 import { ALL_BOOKS, ME } from '../queries'
 
 const Recommendations = (props) => {
   const [books, setBooks] = useState([])
-  const [currentUser, setCurrentUser] = useState(null)
+  // const [currentUser, setCurrentUser] = useState(null)
 
-  const resultBooks = useQuery(ALL_BOOKS, {
+  const [loadBooks, { called, loading }] = useLazyQuery(ALL_BOOKS, {
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
+      console.log(error)
+      // console.log(error.graphQLErrors[0].message)
+    },
+    onCompleted: (data) => {
+      setBooks(data.allBooks)
     },
   })
 
-  const resultMe = useQuery(ME, {
-    onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
-    },
-  })
+  // const resultMe = useQuery(ME, {
+  //   onError: (error) => {
+  //     console.log(error.graphQLErrors[0].message)
+  //   },
+  // })
 
   // const result = useQuery(ALL_BOOKS, {
   //   pollInterval: 5000,
   // })
 
   useEffect(() => {
-    if (resultBooks.data) {
-      setBooks(resultBooks.data.allBooks)
+    if (!called) {
+      loadBooks()
     }
-  }, [resultBooks])
+  }, [])
 
-  useEffect(() => {
-    if (resultMe.data) {
-      setCurrentUser(resultMe.data.me)
-    }
-  }, [resultMe])
+  // useEffect(() => {
+  //   if (resultMe.data) {
+  //     setCurrentUser(resultMe.data.me)
+  //   }
+  // }, [resultMe])
 
   if (!props.show) {
     return null
   }
-  if (resultBooks.loading || resultMe.loading) {
+  if (loading) {
     return <div>loading...</div>
   }
   return (
     <div>
       <h2>Recommendations</h2>
       <p>
-        Books that match your favorite genre <b>{currentUser.favoriteGenre}</b>
+        Books that match your favorite genre{' '}
+        <b>{props.currentUser.favoriteGenre}</b>
       </p>
       <table>
         <tbody>
@@ -54,7 +59,7 @@ const Recommendations = (props) => {
             <th>Published</th>
           </tr>
           {books.map((book) =>
-            book.genres.includes(currentUser.favoriteGenre) ? (
+            book.genres.includes(props.currentUser.favoriteGenre) ? (
               <tr key={book.title}>
                 <td>{book.title}</td>
                 <td>{book.author.name}</td>

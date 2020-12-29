@@ -6,7 +6,8 @@ const Authors = (props) => {
   const [authors, setAuthors] = useState([])
   const result = useQuery(ALL_AUTHORS, {
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
+      console.log(error)
+      // console.log(error.graphQLErrors[0].message)
     },
   })
   // const result = useQuery(ALL_AUTHORS, {

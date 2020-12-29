@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useQuery, useLazyQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
@@ -8,25 +8,26 @@ const Books = (props) => {
   let genres = new Set()
   books.forEach((book) => book.genres.forEach((genre) => genres.add(genre)))
 
-  const result = useQuery(ALL_BOOKS, {
+  const [loadBooks, { called, loading }] = useLazyQuery(ALL_BOOKS, {
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
+      console.log(error)
+      // console.log(error.graphQLErrors[0].message)
+    },
+    onCompleted: (data) => {
+      setBooks(data.allBooks)
     },
   })
-  // const result = useQuery(ALL_BOOKS, {
-  //   pollInterval: 5000,
-  // })
 
   useEffect(() => {
-    if (result.data) {
-      setBooks(result.data.allBooks)
+    if (!called) {
+      loadBooks()
     }
-  }, [result])
+  }, [])
 
   if (!props.show) {
     return null
   }
-  if (result.loading) {
+  if (loading) {
     return <div>loading...</div>
   }
   return (
