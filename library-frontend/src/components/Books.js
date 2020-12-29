@@ -11,6 +11,7 @@ const Books = (props) => {
   const [loadBooks, { called, loading, refetch }] = useLazyQuery(ALL_BOOKS, {
     variables: {
       genre: selectedGenre === '' ? null : selectedGenre,
+      pollInterval: 500,
     },
     onError: (error) => {
       console.log(error)
