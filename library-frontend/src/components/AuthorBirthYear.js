@@ -24,7 +24,7 @@ const AuthorBirthYear = (props) => {
     onCompleted: (data) => {
       setSelectedAuthor(authors[0].name)
       setBirthyear('')
-      console.log(data.editAuthor)
+      // console.log(data.editAuthor)
     },
   })
 

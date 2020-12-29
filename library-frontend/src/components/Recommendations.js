@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery, useLazyQuery } from '@apollo/client'
-import { ALL_BOOKS, ME } from '../queries'
+import { useLazyQuery } from '@apollo/client'
+import { ALL_BOOKS } from '../queries'
 
 const Recommendations = (props) => {
   const [books, setBooks] = useState([])
@@ -30,7 +30,7 @@ const Recommendations = (props) => {
     if (!called) {
       loadBooks()
     }
-  }, [])
+  }, [called, loadBooks])
 
   // useEffect(() => {
   //   if (resultMe.data) {

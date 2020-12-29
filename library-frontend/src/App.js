@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Authors from './components/Authors'
 import AuthorBirthYear from './components/AuthorBirthYear'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Recommendations from './components/Recommendations'
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client'
 import { ME } from './queries'
 
 const App = () => {

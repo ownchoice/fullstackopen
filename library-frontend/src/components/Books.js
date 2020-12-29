@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useQuery, useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
@@ -8,7 +8,10 @@ const Books = (props) => {
   let genres = new Set()
   books.forEach((book) => book.genres.forEach((genre) => genres.add(genre)))
 
-  const [loadBooks, { called, loading }] = useLazyQuery(ALL_BOOKS, {
+  const [loadBooks, { called, loading, refetch }] = useLazyQuery(ALL_BOOKS, {
+    variables: {
+      genre: selectedGenre === '' ? null : selectedGenre,
+    },
     onError: (error) => {
       console.log(error)
       // console.log(error.graphQLErrors[0].message)
@@ -22,7 +25,7 @@ const Books = (props) => {
     if (!called) {
       loadBooks()
     }
-  }, [])
+  }, [called, loadBooks])
 
   if (!props.show) {
     return null
@@ -57,12 +60,22 @@ const Books = (props) => {
         {Array.from(genres).map((genre) => (
           <button
             key={`${genre}${Math.random().toString()}`}
-            onClick={() => setSelectedGenre(genre)}
+            onClick={() => {
+              setSelectedGenre(genre)
+              refetch()
+            }}
           >
             {genre}
           </button>
         ))}
-        <button onClick={() => setSelectedGenre('')}>all</button>
+        <button
+          onClick={() => {
+            setSelectedGenre('')
+            refetch()
+          }}
+        >
+          all
+        </button>
       </div>
     </div>
   )
