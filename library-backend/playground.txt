@@ -219,3 +219,32 @@ query me {
     id
   }
 }
+
+subscription susBook {
+  bookAdded {
+    title
+    genres
+    published
+    author {
+      name
+      born
+      bookCount
+    }
+  }
+}
+
+subscription susUser {
+  userAdded {
+    username
+    id
+    favoriteGenre
+  }
+}
+
+subscription susAuthor {
+  authorAdded {
+    name
+    born
+    bookCount
+  }
+}

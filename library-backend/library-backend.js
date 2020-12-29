@@ -1,4 +1,5 @@
-const { ApolloServer, gql, UserInputError } = require('apollo-server')
+const { ApolloServer, gql, UserInputError, PubSub } = require('apollo-server')
+const pubsub = new PubSub()
 // const { v1: uuid } = require('uuid')
 const mongoose = require('mongoose')
 const Book = require('./models/book')
@@ -150,6 +151,12 @@ const typeDefs = gql`
   type Token {
     value: String!
   }
+
+  type Subscription {
+    bookAdded: Book!
+    authorAdded: Author!
+    userAdded: User!
+  }
 `
 
 const resolvers = {
@@ -209,7 +216,10 @@ const resolvers = {
           })
         }
         const newAuthor = new Author({ ...args })
-        return newAuthor.save()
+
+        const savedAuthor = newAuthor.save()
+        pubsub.publish('AUTHOR_ADDED', { authorAdded: savedAuthor })
+        return savedAuthor
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -244,9 +254,12 @@ const resolvers = {
           born: 1,
         })
         // console.log(finalBook)
+
+        pubsub.publish('BOOK_ADDED', { bookAdded: finalBook })
+
         return finalBook
       } catch (error) {
-        console.log('catched', error)
+        console.log('caught', error)
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
@@ -274,20 +287,25 @@ const resolvers = {
       }
     },
     createUser: (root, args) => {
-      const user = new User({
-        username: args.username,
-        favoriteGenre: args.favoriteGenre,
-      })
-      if (!args.favoriteGenre) {
-        throw new UserInputError('favoriteGenre must be provided', {
-          invalidArgs: 'favoriteGenre',
+      try {
+        const user = new User({
+          username: args.username,
+          favoriteGenre: args.favoriteGenre,
         })
-      }
-      return user.save().catch((error) => {
+        if (!args.favoriteGenre) {
+          throw new UserInputError('favoriteGenre must be provided', {
+            invalidArgs: 'favoriteGenre',
+          })
+        }
+
+        const savedUser = user.save()
+        pubsub.publish('USER_ADDED', { userAdded: savedUser })
+        return savedUser
+      } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
-      })
+      }
     },
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })
@@ -305,6 +323,17 @@ const resolvers = {
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     },
   },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']),
+    },
+    authorAdded: {
+      subscribe: () => pubsub.asyncIterator(['AUTHOR_ADDED']),
+    },
+    userAdded: {
+      subscribe: () => pubsub.asyncIterator(['USER_ADDED']),
+    },
+  },
 }
 
 const server = new ApolloServer({
@@ -320,6 +349,7 @@ const server = new ApolloServer({
   },
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })
