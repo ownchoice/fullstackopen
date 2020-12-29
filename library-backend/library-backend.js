@@ -7,10 +7,13 @@ const Author = require('./models/author')
 const User = require('./models/user')
 const config = require('./utils/config')
 const jwt = require('jsonwebtoken')
+const loaders = require('./loaders')
 
 const JWT_SECRET = config.SECRET
 
 console.log('connecting to', config.MONGODB_URI)
+
+mongoose.set('debug', true)
 
 mongoose
   .connect(config.MONGODB_URI, {
@@ -161,15 +164,18 @@ const typeDefs = gql`
 
 const resolvers = {
   Author: {
-    bookCount: async (root) => {
-      let author = await Author.findOne({ name: root.name })
-      const books = await Book.find({}).populate('author', {
-        name: 1,
-        born: 1,
-      })
-      const bookCount = books.filter((book) => book.author.name === author.name)
-        .length
-      return bookCount
+    bookCount: async (root, args, context) => {
+      // let author = await Author.findOne({ name: root.name })
+      // console.log('Author.findOne({ name: root.name })')
+      // const books = await Book.find({}).populate('author', {
+      //   name: 1,
+      //   born: 1,
+      // })
+      // console.log('Book.find({})')
+      // const bookCount = books.filter((book) => book.author.name === author.name)
+      //   .length
+      // return bookCount
+      return context.loaders.bookCountLoader.load(root.name)
     },
   },
   Query: {
@@ -180,6 +186,9 @@ const resolvers = {
         name: 1,
         born: 1,
       })
+
+      // #TODO Maybe here I could manually add the bookCount property to the author to avoid a second query
+
       if (args.author) {
         booksToReturn = booksToReturn.filter(
           (book) => book.author.name === args.author
@@ -345,7 +354,9 @@ const server = new ApolloServer({
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
       const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
       const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
+      return { currentUser, loaders }
+    } else {
+      return { loaders }
     }
   },
 })
