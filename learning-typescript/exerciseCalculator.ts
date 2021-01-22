@@ -44,6 +44,8 @@ const calculateExercises = (
 // console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 1.9))
 // console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
 // console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 4))
+
+// https://stackoverflow.com/questions/4981891/node-js-equivalent-of-pythons-if-name-main
 if (require.main === module) {
   const parseNumbers = (args: Array<string>): Array<number> => {
     if (args.length < 2) throw new Error('Not enough arguments');

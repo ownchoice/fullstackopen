@@ -25,6 +25,7 @@ const calculateBmi = (height: number, weight: number): string => {
 // console.log(calculateBmi(180, 74));
 // console.log(calculateBmi(182, 60));
 
+// https://stackoverflow.com/questions/4981891/node-js-equivalent-of-pythons-if-name-main
 if (require.main === module) {
   const args = process.argv.slice(2);
 
