@@ -1,6 +1,6 @@
 const calculateBmi = (height: number, weight: number): string => {
   const bmi = weight / Math.pow(height / 100, 2)
-  let category
+  let category = ''
   if (bmi < 15) {
     category = 'Very severely underweight'
   } else if (15 <= bmi && bmi < 16) {
@@ -25,15 +25,19 @@ const calculateBmi = (height: number, weight: number): string => {
 // console.log(calculateBmi(180, 74));
 // console.log(calculateBmi(182, 60));
 
-let args = process.argv.slice(2)
+if (require.main === module) {
+  let args = process.argv.slice(2)
 
-if (args.length < 2) throw new Error('Not enough arguments')
-if (args.length > 2) throw new Error('Too many arguments')
+  if (args.length < 2) throw new Error('Not enough arguments')
+  if (args.length > 2) throw new Error('Too many arguments')
 
-args.forEach((arg) => {
-  if (Number.isNaN(Number(arg))) {
-    throw new Error('Provided values were not numbers!')
-  }
-})
+  args.forEach((arg) => {
+    if (Number.isNaN(Number(arg))) {
+      throw new Error('Provided values were not numbers!')
+    }
+  })
 
-console.log(calculateBmi(Number(args[0]), Number(args[1])))
+  console.log(calculateBmi(Number(args[0]), Number(args[1])))
+}
+
+export default calculateBmi
