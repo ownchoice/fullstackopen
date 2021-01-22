@@ -6,7 +6,8 @@
   "scripts": {
     "ts-node": "ts-node",
     "multiply": "ts-node multiplier.ts",
-    "calculate": "ts-node calculator.ts"
+    "calculate": "ts-node calculator.ts",
+    "calculateBmi": "ts-node bmiCalculator.ts"
   },
   "keywords": [],
   "author": "",
