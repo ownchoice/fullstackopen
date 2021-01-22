@@ -2,6 +2,49 @@ import express from 'express'
 import calculateBmi from './bmiCalculator'
 const app = express()
 
+if (process.env.NODE_ENV === 'development') {
+  const morgan = require('morgan')
+  app.use(
+    morgan(
+      ':method :url - status: :status - content-length: :res[content-length] - :response-time ms'
+    )
+  )
+  // app.use(morgan('tiny'))
+  // morgan.token('mitokenpropio', function (req: any, _res: any) {
+  //   return JSON.stringify(req.body)
+  // })
+  // app.use(
+  //   morgan(function (tokens: any, req: any, res: any) {
+  //     if (tokens.method(req, res) === 'POST') {
+  //       return [
+  //         tokens.method(req, res),
+  //         tokens.url(req, res),
+  //         'status:',
+  //         tokens.status(req, res),
+  //         'content-length:',
+  //         tokens.res(req, res, 'content-length'),
+  //         '-',
+  //         tokens['response-time'](req, res),
+  //         'ms',
+  //         tokens.mitokenpropio(req, res),
+  //       ].join(' ')
+  //     } else {
+  //       return [
+  //         tokens.method(req, res),
+  //         tokens.url(req, res),
+  //         'status:',
+  //         tokens.status(req, res),
+  //         'content-length:',
+  //         tokens.res(req, res, 'content-length'),
+  //         '-',
+  //         tokens['response-time'](req, res),
+  //         'ms',
+  //       ].join(' ')
+  //     }
+  //   })
+  // )
+}
+
 app.get('/', (_req: any, res: any) => {
   res.send('Go to the <a href="/hello">hello</a> endpoint')
 })
@@ -19,9 +62,7 @@ app.get('/bmi', (req: any, res: any) => {
     res.status(422).json({
       error: 'two parameters needed: weigth and height',
     })
-  }
-
-  if (Number.isNaN(Number(height)) || Number.isNaN(Number(weight))) {
+  } else if (Number.isNaN(Number(height)) || Number.isNaN(Number(weight))) {
     res.status(422).json({
       error: 'malformatted parameters',
     })
