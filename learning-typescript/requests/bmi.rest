@@ -1,0 +1,27 @@
+# 
+GET http://localhost:3003/bmi?height=180&weight=65
+###
+
+# 
+GET http://localhost:3003/bmi?height=180&weight=10
+###
+
+# 
+GET http://localhost:3003/bmi?height=180&weight=6500
+###
+
+# 
+GET http://localhost:3003/bmi?height=180&weight=asdsadas
+###
+
+# 
+GET http://localhost:3003/bmi?height=asdsada&weight=65
+###
+
+# 
+GET http://localhost:3003/bmi?height=180
+###
+
+# 
+GET http://localhost:3003/bmi?weight=65
+###

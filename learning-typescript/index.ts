@@ -1,7 +1,9 @@
 import express from 'express';
 import calculateBmi from './bmiCalculator';
 // import calculator from './calculator'
+import calculateExercises from './exerciseCalculator';
 const app = express();
+app.use(express.json());
 // import morgan from 'morgan';
 
 if (process.env.NODE_ENV === 'development') {
@@ -13,40 +15,6 @@ if (process.env.NODE_ENV === 'development') {
       ':method :url - status: :status - content-length: :res[content-length] - :response-time ms'
     )
   );
-  // app.use(morgan('tiny'))
-  // morgan.token('mitokenpropio', function (req, _res) {
-  //   return JSON.stringify(req.body)
-  // })
-  // app.use(
-  //   morgan(function (tokens, req, res) {
-  //     if (tokens.method(req, res) === 'POST') {
-  //       return [
-  //         tokens.method(req, res),
-  //         tokens.url(req, res),
-  //         'status:',
-  //         tokens.status(req, res),
-  //         'content-length:',
-  //         tokens.res(req, res, 'content-length'),
-  //         '-',
-  //         tokens['response-time'](req, res),
-  //         'ms',
-  //         tokens.mitokenpropio(req, res),
-  //       ].join(' ')
-  //     } else {
-  //       return [
-  //         tokens.method(req, res),
-  //         tokens.url(req, res),
-  //         'status:',
-  //         tokens.status(req, res),
-  //         'content-length:',
-  //         tokens.res(req, res, 'content-length'),
-  //         '-',
-  //         tokens['response-time'](req, res),
-  //         'ms',
-  //       ].join(' ')
-  //     }
-  //   })
-  // )
 }
 
 app.get('/', (_req, res) => {
@@ -63,11 +31,11 @@ app.get('/bmi', (req, res) => {
   // console.log(height, weight)
 
   if (req.query.height === undefined || req.query.weight === undefined) {
-    res.status(422).json({
+    res.status(400).json({
       error: 'two parameters needed: weigth and height',
     });
   } else if (Number.isNaN(Number(height)) || Number.isNaN(Number(weight))) {
-    res.status(422).json({
+    res.status(400).json({
       error: 'malformatted parameters',
     });
   } else {
@@ -75,12 +43,34 @@ app.get('/bmi', (req, res) => {
   }
 });
 
-// app.get('/calculate', (req, res) => {
-//   const { value1, value2, op } = req.query
 
-//   const result = calculator(value1, value2, op)
-//   res.send(result)
-// })
+app.post('/exercises', (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+  const body: any = req.body;
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (body.daily_exercises === undefined || body.target === undefined) {
+    res.status(400).json({
+      error: 'parameters missing: daily_exercises and/or target',
+    });
+  }
+
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+  if (Number.isNaN(Number(body.target)) || !Array.isArray(body.daily_exercises) || body.daily_exercises.some((element: any) => Number.isNaN(Number(element)))) {
+    res.status(400).json({
+      error: 'malformatted parameters',
+    });
+  } else {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const dailyHoursOfExercise: Array<number> = body.daily_exercises;
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const target = Number(body.target);
+
+    res.send(calculateExercises(dailyHoursOfExercise, target));
+  }
+});
 
 const PORT = 3003;
 

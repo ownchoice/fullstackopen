@@ -1,0 +1,44 @@
+#
+POST http://localhost:3003/exercises
+content-type: application/json
+# Authorization: Bearer thisIsAToken
+
+{
+    "invalid": "test",
+    "paratemers": "test"
+}
+###
+
+# Malformatted daily_exercises parameter
+POST http://localhost:3003/exercises
+content-type: application/json
+# Authorization: Bearer thisIsAToken
+
+{
+    "daily_exercises": "not a list",
+    "target": 2
+}
+###
+
+# Malformatted target parameter
+POST http://localhost:3003/exercises
+content-type: application/json
+# Authorization: Bearer thisIsAToken
+
+{
+    "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+    "target": "asdad"
+}
+###
+
+# Works fine
+POST http://localhost:3003/exercises
+content-type: application/json
+# Authorization: Bearer thisIsAToken
+
+{
+    "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+    "target": 2.5
+}
+###
+
