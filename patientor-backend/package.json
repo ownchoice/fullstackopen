@@ -1,12 +1,13 @@
 {
-  "name": "ilaris-flight-diaries",
+  "name": "patientor-backend",
   "version": "1.0.0",
-  "description": "Ilari's flight diaries",
-  "main": "index.js",
+  "description": "Patientor backend",
+  "main": "index.ts",
   "scripts": {
     "tsc": "tsc",
     "dev": "ts-node-dev index.ts",
-    "lint": "eslint --ext .ts ."
+    "lint": "eslint --ext .ts .",
+    "start": "node build/index.js"
   },
   "author": "Me, myself",
   "license": "ISC",
