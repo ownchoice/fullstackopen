@@ -1,0 +1,51 @@
+GET http://localhost:3001/ping
+
+###
+
+GET http://localhost:3001/api/ping
+
+###
+
+GET http://localhost:3001/api/patients
+
+###
+
+GET http://localhost:3001/api/diagnoses
+
+###
+
+GET http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667
+
+###
+
+GET http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-111111111111
+
+###
+POST https://httpbin.org/post HTTP/1.1
+content-type: application/json
+
+{
+  "name": "Arturo Casas",
+  "dateOfBirth": "2021-07-09",
+  "ssn": "222333-111X",
+  "gender": "male",
+  "occupation": "Lazy"
+}
+
+###
+POST http://localhost:3001/api/patients HTTP/1.1
+content-type: application/json
+
+{
+  "name": "Arturo Casas",
+  "dateOfBirth": "2021-07-09",
+  "ssn": "222333-111X",
+  "gender": "male",
+  "occupation": "Lazy"
+}
+
+###
+
+GET http://localhost:3001/api/patients
+
+###
