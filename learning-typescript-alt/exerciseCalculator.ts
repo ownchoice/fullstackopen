@@ -19,8 +19,8 @@ const calculateExercises = (
   const rating = average < target * 0.8 ? 1 : average < target ? 2 : 3;
   const ratingsDesc = [
     "Needs improvement, don't give up!",
-    'Almost there, keep going!',
-    'Reached the goal, good job!',
+    "Almost there, keep going!",
+    "Reached the goal, good job!",
   ];
   return {
     periodLength: dailyExerciseHours.length,
@@ -33,6 +33,8 @@ const calculateExercises = (
   };
 };
 
+export default calculateExercises;
+
 // console.log(calculateExercises(2, [3, 0, 2, 4.5, 0, 3, 1]));
 
 type ExerciseInputValues = {
@@ -41,7 +43,7 @@ type ExerciseInputValues = {
 };
 
 const parseArgumentsExercise = (args: Array<string>): ExerciseInputValues => {
-  if (args.length < 4) throw new Error('Not enough arguments');
+  if (args.length < 4) throw new Error("Not enough arguments");
   // if (args.length > 4) throw new Error('Too many arguments');
 
   // if (
@@ -55,7 +57,7 @@ const parseArgumentsExercise = (args: Array<string>): ExerciseInputValues => {
       dailyExercise: args.slice(3).map((elem) => Number(elem)),
     };
   } else {
-    throw new Error('Provided values were not numbers!');
+    throw new Error("Provided values were not numbers!");
   }
 };
 
@@ -63,5 +65,5 @@ try {
   const { target, dailyExercise } = parseArgumentsExercise(process.argv);
   console.log(calculateExercises(target, dailyExercise));
 } catch (e) {
-  console.log('Error, something bad happened, message: ', e.message);
+  console.error("Error, something bad happened, message: ", e as Error);
 }

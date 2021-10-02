@@ -2,6 +2,6 @@
   "javascript.format.semicolons": "insert",
   "typescript.format.semicolons": "insert",
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   }
 }

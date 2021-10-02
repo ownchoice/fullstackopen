@@ -1,21 +1,21 @@
 const calculateBmi = (height: number, weight: number): string => {
   const bmi: number = weight / (height / 100) ** 2;
   if (bmi < 16) {
-    return 'Underweight (Severe thinness)';
+    return "Underweight (Severe thinness)";
   } else if (bmi <= 16.9) {
-    return 'Underweight (Moderate thinness)';
+    return "Underweight (Moderate thinness)";
   } else if (bmi <= 18.4) {
-    return 'Underweight (Mild thinness)';
+    return "Underweight (Mild thinness)";
   } else if (bmi <= 24.9) {
-    return 'Normal range';
+    return "Normal range";
   } else if (bmi <= 29.9) {
-    return 'Overweight (Pre-obese)';
+    return "Overweight (Pre-obese)";
   } else if (bmi <= 34.9) {
-    return 'Obese (Class I)';
+    return "Obese (Class I)";
   } else if (bmi <= 39.9) {
-    return 'Obese (Class II)';
+    return "Obese (Class II)";
   } else {
-    return 'Obese (Class III)';
+    return "Obese (Class III)";
   }
 };
 
@@ -29,8 +29,8 @@ interface BmiInputValues {
 }
 
 const parseArgumentsBmi = (args: Array<string>): BmiInputValues => {
-  if (args.length < 4) throw new Error('Not enough arguments');
-  if (args.length > 4) throw new Error('Too many arguments');
+  if (args.length < 4) throw new Error("Not enough arguments");
+  if (args.length > 4) throw new Error("Too many arguments");
 
   if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
     return {
@@ -38,7 +38,7 @@ const parseArgumentsBmi = (args: Array<string>): BmiInputValues => {
       weight: Number(args[3]),
     };
   } else {
-    throw new Error('Provided values were not numbers!');
+    throw new Error("Provided values were not numbers!");
   }
 };
 
@@ -46,5 +46,5 @@ try {
   const { height, weight } = parseArgumentsBmi(process.argv);
   console.log(calculateBmi(height, weight));
 } catch (e) {
-  console.log('Error, something bad happened, message: ', e.message);
+  console.error("Error, something bad happened, message: ", e as Error);
 }
