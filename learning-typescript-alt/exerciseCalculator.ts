@@ -37,33 +37,33 @@ export default calculateExercises;
 
 // console.log(calculateExercises(2, [3, 0, 2, 4.5, 0, 3, 1]));
 
-type ExerciseInputValues = {
-  dailyExercise: number[];
-  target: number;
-};
+// type ExerciseInputValues = {
+//   dailyExercise: number[];
+//   target: number;
+// };
 
-const parseArgumentsExercise = (args: Array<string>): ExerciseInputValues => {
-  if (args.length < 4) throw new Error("Not enough arguments");
-  // if (args.length > 4) throw new Error('Too many arguments');
+// const parseArgumentsExercise = (args: Array<string>): ExerciseInputValues => {
+//   if (args.length < 4) throw new Error("Not enough arguments");
+//   // if (args.length > 4) throw new Error('Too many arguments');
 
-  // if (
-  //   Array.isArray(args[2]) &&
-  //   !args[2].some((elem) => Number.isNaN(Number(elem))) &&
-  //   !Number.isNaN(Number(args[3]))
-  // ) {
-  if (args.slice(2).every((elem) => !Number.isNaN(Number(elem)))) {
-    return {
-      target: Number(args[2]),
-      dailyExercise: args.slice(3).map((elem) => Number(elem)),
-    };
-  } else {
-    throw new Error("Provided values were not numbers!");
-  }
-};
+//   // if (
+//   //   Array.isArray(args[2]) &&
+//   //   !args[2].some((elem) => Number.isNaN(Number(elem))) &&
+//   //   !Number.isNaN(Number(args[3]))
+//   // ) {
+//   if (args.slice(2).every((elem) => !Number.isNaN(Number(elem)))) {
+//     return {
+//       target: Number(args[2]),
+//       dailyExercise: args.slice(3).map((elem) => Number(elem)),
+//     };
+//   } else {
+//     throw new Error("Provided values were not numbers!");
+//   }
+// };
 
-try {
-  const { target, dailyExercise } = parseArgumentsExercise(process.argv);
-  console.log(calculateExercises(target, dailyExercise));
-} catch (e) {
-  console.error("Error, something bad happened, message: ", e as Error);
-}
+// try {
+//   const { target, dailyExercise } = parseArgumentsExercise(process.argv);
+//   console.log(calculateExercises(target, dailyExercise));
+// } catch (e) {
+//   console.error("Error, something bad happened, message: ", e as Error);
+// }

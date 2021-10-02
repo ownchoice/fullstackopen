@@ -1,0 +1,107 @@
+GET http://localhost:3003/bmi?height=180&weight=74
+
+###
+
+GET http://localhost:3003/bmi?height=180&weight=11
+
+###
+
+GET http://localhost:3003/bmi?height=180&weight=999
+
+###
+
+GET http://localhost:3003/bmi?height=180&weight=
+
+###
+
+GET http://localhost:3003/bmi?height=&weight=74
+
+###
+
+GET http://localhost:3003/bmi?height=180
+
+###
+
+GET http://localhost:3003/bmi?weight=74
+
+###
+
+GET http://localhost:3003/bmi?height=sad&weight=74
+
+###
+
+GET http://localhost:3003/bmi?height=180&weight=ouououou
+
+###
+
+GET http://localhost:3003/bmi?height=eueueu&weight=oaoaoa
+
+###
+POST https://httpbin.org/post HTTP/1.1
+content-type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+  "target": 2.5
+}
+
+###
+POST http://localhost:3003/exercises HTTP/1.1
+content-type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+  "target": 2.5
+}
+
+###
+POST http://localhost:3003/exercises HTTP/1.1
+content-type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+  "target": 1.5
+}
+
+###
+POST http://localhost:3003/exercises HTTP/1.1
+content-type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+  "target": 1
+}
+
+###
+POST http://localhost:3003/exercises HTTP/1.1
+content-type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+  "target": ""
+}
+
+###
+POST http://localhost:3003/exercises HTTP/1.1
+content-type: application/json
+
+{
+  "daily_exercises": "",
+  "target": 3
+}
+
+###
+POST http://localhost:3003/exercises HTTP/1.1
+content-type: application/json
+
+{
+  "target": 3
+}
+
+###
+POST http://localhost:3003/exercises HTTP/1.1
+content-type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5]
+}
