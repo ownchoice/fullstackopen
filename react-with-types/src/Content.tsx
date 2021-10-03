@@ -1,13 +1,13 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { CoursePart, CoursePartPropTypes } from './types'
+import Part from './Part'
 
 const Content = (props: Props) => {
   return (
     <div>
       {props.parts.map((part) => (
-        <p key={part.name}>
-          {part.name} {part.exerciseCount}
-        </p>
+        <Part part={part} key={part.name} />
       ))}
     </div>
   )
@@ -18,7 +18,7 @@ interface Props {
 }
 
 Content.propTypes = {
-  parts: CoursePartPropTypes,
+  parts: PropTypes.arrayOf(CoursePartPropTypes),
 }
 
 export default Content
