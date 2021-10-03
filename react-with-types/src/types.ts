@@ -29,19 +29,26 @@ export interface CourseSubmissionPart extends CoursePartDesc {
   exerciseSubmissionLink: string
 }
 
+export interface CourseSpecialPart extends CoursePartDesc {
+  type: 'special'
+  requirements: string[]
+}
+
 export type CoursePart =
   | CourseNormalPart
   | CourseProjectPart
   | CourseSubmissionPart
+  | CourseSpecialPart
 
 export const CoursePartPropTypes = PropTypes.shape({
   name: PropTypes.string.isRequired,
   exerciseCount: PropTypes.number.isRequired,
   // type: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['normal', 'groupProject', 'submission']),
+  type: PropTypes.oneOf(['normal', 'groupProject', 'submission', 'special']),
   description: PropTypes.string,
   groupProjectCount: PropTypes.number,
   exerciseSubmissionLink: PropTypes.string,
+  requirements: PropTypes.arrayOf(PropTypes.string),
 })
 
 // export const CoursePartBasePropTypes = PropTypes.shape({
