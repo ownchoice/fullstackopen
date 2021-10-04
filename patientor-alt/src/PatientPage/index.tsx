@@ -10,9 +10,12 @@ interface Props {
 
 const index = () => {
   const { id } = useParams<Props>();
-  const [{ patients }, _dispatch] = useStateValue();
+  const [{ patients, diagnoses }, _dispatch] = useStateValue();
 
   const patient: Patient | undefined = patients[id];
+
+  console.log(typeof diagnoses);
+  console.log(diagnoses);
 
   return (
     <div className="App">
@@ -36,26 +39,34 @@ const index = () => {
             <li>Date of birth: {patient.dateOfBirth}</li>
             <li>ID: {patient.id}</li>
           </ul>
-          {patient.entries && (
-            <>
-              <h3>Entries</h3>
-              <ul>
-                {patient.entries.map((entry) => (
-                  <>
-                    {entry.date} <em>{entry.description}</em>
-                    {entry.diagnosisCodes && (
-                      <ul>
-                        {entry.diagnosisCodes?.map((code) => (
-                          <li key={code}>{code}</li>
-                        ))}
-                      </ul>
-                    )}
-                    <br />
-                  </>
-                ))}
-              </ul>
-            </>
-          )}
+          {patient.entries &&
+            (patient.entries.length > 0 ? (
+              <>
+                <h3>Entries</h3>
+                <ul>
+                  {patient.entries.map((entry) => (
+                    <>
+                      {entry.date} <em>{entry.description}</em>
+                      {entry.diagnosisCodes && (
+                        <ul>
+                          {entry.diagnosisCodes?.map((code) => (
+                            <li key={code}>
+                              {code}:{" "}
+                              {diagnoses[code]
+                                ? diagnoses[code].name
+                                : "Name unknown"}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      <br />
+                    </>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <h3>No entries found</h3>
+            ))}
         </>
       )}
       {!patient && (
