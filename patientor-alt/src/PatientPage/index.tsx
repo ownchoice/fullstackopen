@@ -13,16 +13,13 @@ const index = () => {
   const [{ patients }, _dispatch] = useStateValue();
 
   const patient: Patient | undefined = patients[id];
-  if (patient) {
-    console.log(patient.gender);
-    console.log(typeof patient.gender);
-  }
+
   return (
     <div className="App">
       {patient && (
         <>
           <Container>
-            <h3>
+            <h2>
               {patient.name}{" "}
               {patient.gender === Gender.Male ? (
                 <Icon name="man" aria-label="Gender: male" />
@@ -31,13 +28,34 @@ const index = () => {
               ) : (
                 <Icon name="other gender" aria-label="Gender: other" />
               )}
-            </h3>
+            </h2>
           </Container>
           <ul>
             <li>Occupation: {patient.occupation}</li>
+            {patient.ssn && <li>SSN: {patient.ssn}</li>}
             <li>Date of birth: {patient.dateOfBirth}</li>
             <li>ID: {patient.id}</li>
           </ul>
+          {patient.entries && (
+            <>
+              <h3>Entries</h3>
+              <ul>
+                {patient.entries.map((entry) => (
+                  <>
+                    {entry.date} <em>{entry.description}</em>
+                    {entry.diagnosisCodes && (
+                      <ul>
+                        {entry.diagnosisCodes?.map((code) => (
+                          <li key={code}>{code}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <br />
+                  </>
+                ))}
+              </ul>
+            </>
+          )}
         </>
       )}
       {!patient && (

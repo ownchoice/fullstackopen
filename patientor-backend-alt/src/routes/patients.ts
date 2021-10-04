@@ -5,11 +5,13 @@ import { toNewPatient } from "../utils";
 const router = express.Router();
 
 router.get("/", (_req, res) => {
-  res.send(patientService.getPatients());
+  // res.send(patientService.getPatients());
+  res.send(patientService.getPatientsSensitive());
 });
 
 router.get("/:id", (req, res) => {
-  const patient = patientService.findById(req.params.id);
+  // const patient = patientService.findById(req.params.id);
+  const patient = patientService.findByIdSensitive(req.params.id);
 
   if (patient) {
     res.send(patient);
