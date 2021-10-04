@@ -110,6 +110,67 @@ const patients: Patient[] = [
       },
     ],
   },
+  {
+    id: "d1111c6e-f723-1234-8f0b-362b9e151111",
+    name: "Mister Test",
+    dateOfBirth: "1000-01-02",
+    ssn: "090111-1234",
+    gender: Gender.Other,
+    occupation: "Tester",
+    entries: [
+      {
+        id: "54a8746e-4444-4cf4-bf72-11111111111",
+        date: "2019-05-01",
+        specialist: "Dr Byte House",
+        type: "HealthCheck",
+        description: "Digital overdose, very bytestatic. Otherwise healthy.",
+        healthCheckRating: 0,
+      },
+      {
+        id: "b4f4eca1-3333-4b13-9a18-11111111111",
+        date: "2019-10-20",
+        specialist: "MD House",
+        type: "HealthCheck",
+        description: "Yearly control visit. Cholesterol levels back to normal.",
+        healthCheckRating: 0,
+      },
+      {
+        id: "fcd59fa6-2222-4fec-ac4d-11111111111",
+        date: "2019-09-10",
+        specialist: "MD House",
+        type: "OccupationalHealthcare",
+        employerName: "FBI",
+        description: "Prescriptions renewed.",
+      },
+      {
+        id: "fcd59fa6-5555-4fec-1111-11111111111",
+        date: "2019-08-05",
+        type: "OccupationalHealthcare",
+        specialist: "MD House",
+        employerName: "HyPD",
+        diagnosisCodes: ["Z57.1", "Z74.3", "M51.2"],
+        description:
+          "Patient mistakenly found himself in a nuclear plant waste site without protection gear. Very minor radiation poisoning. ",
+        sickLeave: {
+          startDate: "2019-08-05",
+          endDate: "2019-08-28",
+        },
+      },
+      {
+        id: "d811e46d-6666-4d90-b090-4535c7cf8fb1",
+        date: "2015-01-02",
+        type: "Hospital",
+        specialist: "MD House",
+        diagnosisCodes: ["S62.5"],
+        description:
+          "Healing time appr. 2 weeks. patient doesn't remember how he got the injury.",
+        discharge: {
+          date: "2015-01-16",
+          criteria: "Thumb has healed.",
+        },
+      },
+    ],
+  },
 ];
 
 export default patients;

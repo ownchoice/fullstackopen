@@ -3,19 +3,16 @@ import { useParams } from "react-router";
 import { Container, Icon } from "semantic-ui-react";
 import { useStateValue } from "../state";
 import { Patient, Gender } from "../types";
-
+import PatientEntries from "../components/PatientEntries";
 interface Props {
   id: string;
 }
 
 const index = () => {
   const { id } = useParams<Props>();
-  const [{ patients, diagnoses }, _dispatch] = useStateValue();
+  const [{ patients }, _dispatch] = useStateValue();
 
   const patient: Patient | undefined = patients[id];
-
-  console.log(typeof diagnoses);
-  console.log(diagnoses);
 
   return (
     <div className="App">
@@ -42,27 +39,8 @@ const index = () => {
           {patient.entries &&
             (patient.entries.length > 0 ? (
               <>
-                <h3>Entries</h3>
-                <ul>
-                  {patient.entries.map((entry) => (
-                    <>
-                      {entry.date} <em>{entry.description}</em>
-                      {entry.diagnosisCodes && (
-                        <ul>
-                          {entry.diagnosisCodes?.map((code) => (
-                            <li key={code}>
-                              {code}:{" "}
-                              {diagnoses[code]
-                                ? diagnoses[code].name
-                                : "Name unknown"}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      <br />
-                    </>
-                  ))}
-                </ul>
+                <h3>Entries ({patient.entries.length})</h3>
+                <PatientEntries entries={patient.entries} />
               </>
             ) : (
               <h3>No entries found</h3>
