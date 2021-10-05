@@ -34,7 +34,6 @@ const index = () => {
         `${apiBaseUrl}/patients/${id}/entries`,
         values
       );
-      console.log("test1");
       const fetchPatientList = async () => {
         try {
           const { data: patientListFromApi } = await axios.get<Patient[]>(
@@ -46,7 +45,6 @@ const index = () => {
         }
       };
       void fetchPatientList();
-      console.log("test2");
       closeModal();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
