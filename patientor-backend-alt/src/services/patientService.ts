@@ -1,6 +1,13 @@
 import { v4 as uuid } from "uuid";
-import patients from "../../data/patients";
-import { NewPatient, NonSensitivePatient, Patient } from "../types";
+import importedPatients from "../../data/patients";
+import {
+  NewPatient,
+  NonSensitivePatient,
+  Patient,
+  EntryWithoutId,
+} from "../types";
+
+let patients = importedPatients;
 
 const getPatients = (): NonSensitivePatient[] => {
   return patients.map(({ ssn: _ssn, entries: _entries, ...rest }) => rest);
@@ -32,10 +39,36 @@ const addPatient = (patient: NewPatient) => {
   return newPatient;
 };
 
+const addPatientEntry = (
+  patientId: string,
+  entry: EntryWithoutId
+): Patient | undefined => {
+  const entryId: string = uuid();
+  const patient = patients.find((d) => d.id === patientId);
+  if (patient) {
+    patients = patients.map((patient) => {
+      if (patient.id === patientId) {
+        return {
+          ...patient,
+          entries: patient.entries.concat({ id: entryId, ...entry }),
+        };
+      } else {
+        return patient;
+      }
+    });
+
+    // returns ssn, sensible information
+    return patients.find((d) => d.id === patientId);
+  } else {
+    return undefined;
+  }
+};
+
 export default {
   getPatients,
   getPatientsSensitive,
   findById,
   findByIdSensitive,
   addPatient,
+  addPatientEntry,
 };

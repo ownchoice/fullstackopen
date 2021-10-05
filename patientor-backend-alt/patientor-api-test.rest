@@ -49,3 +49,66 @@ content-type: application/json
 GET http://localhost:3001/api/patients
 
 ###
+
+GET http://localhost:3001/api/patients/d1111c6e-f723-1234-8f0b-362b9e151111/entries
+
+###
+POST http://localhost:3001/api/patients/d1111c6e-f723-1234-8f0b-362b9e151111/entries HTTP/1.1
+content-type: application/json
+
+{
+  "date": "2021-01-22",
+  "specialist": "Someone else",
+  "type": "HealthCheck",
+  "description": "Testing high risk health check",
+  "healthCheckRating": 2
+}
+
+###
+POST http://localhost:3001/api/patients/d1111c6e-f723-1234-8f0b-362b9e151111/entries HTTP/1.1
+content-type: application/json
+
+{
+  "date": "2021-03-05",
+  "type": "OccupationalHealthcare",
+  "specialist": "Someone",
+  "employerName": "Google",
+  "diagnosisCodes": [
+    "S03.5",
+    "N30.0",
+    "J12.82"
+  ],
+  "description": "Doing some tests",
+  "sickLeave": {
+    "startDate": "2021-02-01",
+    "endDate": "2021-03-01"
+  }
+}
+
+###
+POST http://localhost:3001/api/patients/d1111c6e-f723-1234-8f0b-362b9e151111/entries HTTP/1.1
+content-type: application/json
+
+{
+  "date": "2021-05-01",
+  "type": "Hospital",
+  "specialist": "Mr Specialist",
+  "diagnosisCodes": [
+    "H35.29",
+    "S62.5",
+    "F43.2",
+    "N30.0",
+    "S03.5"
+  ],
+  "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit phasellus, rutrum ligula auctor rhoncus habitant sagittis morbi, libero ut erat metus pretium euismod vehicula. Dapibus augue hendrerit vulputate in tristique non pulvinar, porttitor facilisi praesent at vestibulum viverra litora maecenas, porta accumsan varius nisi lectus sem.",
+  "discharge": {
+    "date": "2021-04-01",
+    "criteria": "Did some testing"
+  }
+}
+
+###
+
+GET http://localhost:3001/api/patients/d1111c6e-f723-1234-8f0b-362b9e151111/entries
+
+###

@@ -11,8 +11,9 @@ type UnionOmit<T, K extends string | number | symbol> = T extends unknown
 
 // Define Entry without the 'id' property
 export type EntryWithoutId = UnionOmit<Entry, "id">;
+export type BaseEntryWithoutId = UnionOmit<BaseEntry, "id">;
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -26,6 +27,15 @@ export enum HealthCheckRating {
   HighRisk = 2,
   CriticalRisk = 3,
 }
+
+export type EntryType = "HealthCheck" | "OccupationalHealthcare" | "Hospital";
+
+// not sure about this
+export const EntryTypes: Array<string> = [
+  "HealthCheck",
+  "OccupationalHealthcare",
+  "Hospital",
+];
 
 interface HealthCheckEntry extends BaseEntry {
   type: "HealthCheck";

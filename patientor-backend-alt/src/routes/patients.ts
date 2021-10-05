@@ -1,6 +1,6 @@
 import express from "express";
 import patientService from "../services/patientService";
-import { toNewPatient } from "../utils";
+import { toNewPatient, toNewPatientEntry } from "../utils";
 
 const router = express.Router();
 
@@ -21,20 +21,35 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  // const { name, dateOfBirth, ssn, gender, occupation } = req.body;
-  // const newPatient = patientService.addPatient({
-  //   name,
-  //   dateOfBirth,
-  //   ssn,
-  //   gender,
-  //   occupation,
-  // });
-  // res.json(newPatient);
-
   try {
     const newPatient = toNewPatient(req.body);
     const addedPatient = patientService.addPatient(newPatient);
     res.json(addedPatient);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      res.status(400).send(e.message);
+    }
+  }
+});
+
+router.get("/:id/entries", (req, res) => {
+  const patient = patientService.findByIdSensitive(req.params.id);
+
+  if (patient) {
+    res.send(patient.entries);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+router.post("/:id/entries", (req, res) => {
+  try {
+    const newPatientEntry = toNewPatientEntry(req.body);
+    const patientWithAddedEntry = patientService.addPatientEntry(
+      req.params.id,
+      newPatientEntry
+    );
+    res.json(patientWithAddedEntry);
   } catch (e: unknown) {
     if (e instanceof Error) {
       res.status(400).send(e.message);
