@@ -24,6 +24,8 @@ const parseString = (param: unknown, paramName: string): string => {
 };
 
 const isDate = (date: string): boolean => {
+  // https://www.regular-expressions.info/dates.html
+  // return /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/.test(date);
   return Boolean(Date.parse(date));
 };
 
@@ -78,13 +80,17 @@ const parseDiagnosisCodes = (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isHealthCheckRating = (param: any): param is HealthCheckRating => {
-  return Object.values(HealthCheckRating).includes(param);
+  return Object.values(HealthCheckRating).includes(Number(param));
 };
 
 const parseHealthCheckRating = (
   healthCheckRating: unknown
 ): HealthCheckRating => {
-  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+  if (
+    !healthCheckRating ||
+    Number.isNaN(Number(healthCheckRating)) ||
+    !isHealthCheckRating(healthCheckRating)
+  ) {
     throw new Error(
       "Incorrect or missing health check rating: " + healthCheckRating
     );

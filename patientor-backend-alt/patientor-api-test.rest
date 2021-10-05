@@ -112,3 +112,17 @@ content-type: application/json
 GET http://localhost:3001/api/patients/d1111c6e-f723-1234-8f0b-362b9e151111/entries
 
 ###
+POST http://localhost:3001/api/patients/d1111c6e-f723-1234-8f0b-362b9e151111/entries HTTP/1.1
+content-type: application/json
+
+{
+  "date": "2021-01-18",
+  "specialist": "Someone",
+  "type": "HealthCheck",
+  "description": "desc test test test test test",
+  "healthCheckRating": "2"
+}
+
+###
+
+

@@ -10,7 +10,7 @@ interface Props {
 const PatientEntries = ({ entries }: Props) => {
   const [{ diagnoses }, _dispatch] = useStateValue();
 
-  console.log(diagnoses);
+  // console.log(diagnoses);
 
   // https://www.geeksforgeeks.org/how-to-calculate-the-number-of-days-between-two-dates-in-javascript/
   const daysBetweenDates = (startDate: string, endDate: string) => {

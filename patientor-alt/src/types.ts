@@ -28,6 +28,8 @@ export enum HealthCheckRating {
   CriticalRisk = 3,
 }
 
+export type HealthCheckRatingStrings = keyof typeof HealthCheckRating;
+
 export type EntryType = "HealthCheck" | "OccupationalHealthcare" | "Hospital";
 
 // not sure about this
@@ -93,3 +95,7 @@ export const assertNever = (value: never): never => {
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
   );
 };
+
+// https://www.regular-expressions.info/dates.html
+export const isValidDate = (date: string): boolean =>
+  /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/.test(date);
