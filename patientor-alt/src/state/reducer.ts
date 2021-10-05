@@ -49,7 +49,7 @@ export const reducer = (state: State, action: Action): State => {
             (memo, patient) => ({ ...memo, [patient.id]: patient }),
             {}
           ),
-          ...state.patients,
+          // ...state.patients,
         },
       };
     case "ADD_PATIENT":
@@ -68,7 +68,7 @@ export const reducer = (state: State, action: Action): State => {
             (memo, diagnosis) => ({ ...memo, [diagnosis.code]: diagnosis }),
             {}
           ),
-          ...state.diagnoses,
+          // ...state.diagnoses,
         },
       };
     case "ADD_DIAGNOSIS":

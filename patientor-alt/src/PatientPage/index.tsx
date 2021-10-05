@@ -1,11 +1,10 @@
 import React from "react";
 import { useParams } from "react-router";
 import { Container, Icon, Button } from "semantic-ui-react";
-import { useStateValue } from "../state";
+import { useStateValue, setPatientList } from "../state";
 import { Patient, Gender, EntryWithoutId } from "../types";
 import PatientEntries from "../components/PatientEntries";
 import AddEntryModal from "../AddEntryModal";
-import { fetchPatientList } from "../App";
 import { apiBaseUrl } from "../constants";
 import axios from "axios";
 
@@ -31,12 +30,22 @@ const index = () => {
 
   const submitNewEntry = async (values: EntryWithoutId) => {
     try {
-      void (await axios.post<EntryWithoutId>(
+      await axios.post<EntryWithoutId>(
         `${apiBaseUrl}/patients/${id}/entries`,
         values
-      ));
+      );
       console.log("test1");
-      void fetchPatientList(dispatch);
+      const fetchPatientList = async () => {
+        try {
+          const { data: patientListFromApi } = await axios.get<Patient[]>(
+            `${apiBaseUrl}/patients`
+          );
+          dispatch(setPatientList(patientListFromApi));
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      void fetchPatientList();
       console.log("test2");
       closeModal();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

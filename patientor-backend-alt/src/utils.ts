@@ -80,22 +80,31 @@ const parseDiagnosisCodes = (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isHealthCheckRating = (param: any): param is HealthCheckRating => {
-  return Object.values(HealthCheckRating).includes(Number(param));
+  if (isString(param)) {
+    return Object.values(HealthCheckRating).includes(parseInt(param));
+  } else {
+    return Object.values(HealthCheckRating).includes(param);
+  }
 };
 
 const parseHealthCheckRating = (
   healthCheckRating: unknown
 ): HealthCheckRating => {
+  // !healthCheckRating doesn't work for 0
   if (
-    !healthCheckRating ||
-    Number.isNaN(Number(healthCheckRating)) ||
+    (!healthCheckRating && healthCheckRating !== 0) ||
+    (isString(healthCheckRating) &&
+      Number.isNaN(parseInt(healthCheckRating))) ||
     !isHealthCheckRating(healthCheckRating)
   ) {
     throw new Error(
       "Incorrect or missing health check rating: " + healthCheckRating
     );
   }
-  return healthCheckRating;
+
+  return isString(healthCheckRating)
+    ? parseFloat(healthCheckRating)
+    : healthCheckRating;
 };
 
 interface EntryFields {
@@ -173,7 +182,9 @@ export const toNewPatientEntry = (object: EntryFields): EntryWithoutId => {
 };
 
 const parseEntries = (entries: unknown): Entry[] => {
-  if (!entries || !Array.isArray(entries)) {
+  if (!entries) {
+    return [];
+  } else if (!Array.isArray(entries)) {
     throw new Error("Incorrect or missing patient entries");
   }
 
