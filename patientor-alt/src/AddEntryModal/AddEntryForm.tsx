@@ -1,11 +1,6 @@
 import React from "react";
 import { Grid, Button, Form as UiForm } from "semantic-ui-react";
-import {
-  Field,
-  Formik,
-  Form,
-  // FormikProps
-} from "formik";
+import { Field, Formik, Form } from "formik";
 import { useStateValue } from "../state";
 import { TextField, DiagnosisSelection } from "../AddPatientModal/FormField";
 import {
@@ -13,6 +8,8 @@ import {
   EntryType,
   HealthCheckRating,
   isValidDate,
+  assertNever,
+  BaseEntryWithoutId,
 } from "../types";
 
 interface Props {
@@ -27,25 +24,27 @@ export type EntryTypeOption = {
 };
 
 const entryTypeOptions: EntryTypeOption[] = [
-  { value: "HealthCheck", label: "Health check" },
-  { value: "OccupationalHealthcare", label: "Occupational healthcare" },
-  { value: "Hospital", label: "Hospital" },
+  { value: EntryType.HealthCheck, label: "Health check" },
+  { value: EntryType.OccupationalHealthcare, label: "Occupational healthcare" },
+  { value: EntryType.Hospital, label: "Hospital" },
 ];
 
 type EntryTypeSelectFieldProps = {
   name: string;
   label: string;
   options: EntryTypeOption[];
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export const SelectField = ({
   name,
   label,
   options,
+  onChange,
 }: EntryTypeSelectFieldProps) => (
   <UiForm.Field>
     <label>{label}</label>
-    <Field as="select" name={name} className="ui dropdown">
+    <Field as="select" name={name} className="ui dropdown" onChange={onChange}>
       {options.map((option) => (
         <option key={option.value} value={option.value}>
           {option.label || option.value}
@@ -90,40 +89,66 @@ export const HealthCheckRatingSelectField = ({
   </UiForm.Field>
 );
 
-export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
+export const AddEntryForm: React.FC<Props> = ({
+  onSubmit,
+  onCancel,
+}: Props) => {
   const [{ diagnoses }] = useStateValue();
   const [sickLeaveBool, setSickLeaveBool] = React.useState<boolean>(false);
 
-  // const handleChangeSickLeave = (
-  //   value: boolean,
-  //   setFieldValue: FormikProps<{
-  //     "sickLeave.startDate": string;
-  //     "sickLeave.endDate": string;
-  //   }>["setFieldValue"]
-  // ): void => {
-  //   switch (value) {
-  //     case "yes":
-  //       setSickLeaveBool(true);
-  //       setFieldValue
-  //       break;
-  //     case "no":
-  //       setSickLeaveBool(false);
-  //       break;
-  //     default:
-  //       assertNever(value);
-  //   }
-  // };
+  const [entryType, setEntryType] = React.useState<EntryType>(
+    EntryType.HealthCheck
+  );
+
+  const [baseValues, setBaseValues] = React.useState<BaseEntryWithoutId>({
+    description: "",
+    date: "",
+    specialist: "",
+    diagnosisCodes: [],
+  });
+
+  let initialValues: EntryWithoutId;
+  switch (entryType) {
+    case EntryType.HealthCheck:
+      initialValues = {
+        ...baseValues,
+        type: entryType,
+        healthCheckRating: 0,
+      };
+      break;
+
+    case EntryType.Hospital:
+      initialValues = {
+        ...baseValues,
+        type: entryType,
+        discharge: {
+          date: "",
+          criteria: "",
+        },
+      };
+      break;
+
+    case EntryType.OccupationalHealthcare:
+      initialValues = {
+        ...baseValues,
+        type: entryType,
+        employerName: "",
+        sickLeave: {
+          startDate: "",
+          endDate: "",
+        },
+      };
+      break;
+
+    default:
+      return assertNever(entryType);
+  }
 
   return (
     <Formik
-      initialValues={{
-        description: "",
-        date: "",
-        specialist: "",
-        diagnosisCodes: [],
-        type: "HealthCheck",
-        healthCheckRating: 0,
-      }}
+      enableReinitialize
+      validateOnMount
+      initialValues={initialValues}
       onSubmit={onSubmit}
       validate={(values) => {
         const requiredError = "Field is required";
@@ -142,38 +167,63 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         }
         if (!values.date) {
           errors.date = requiredError;
-        }
-        if (values.date && !isValidDate(values.date)) {
+        } else if (!isValidDate(values.date)) {
           errors.date = invalidDateError;
         }
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
-        if (values.type === "OccupationalHealthcare") {
-          if (sickLeaveBool) {
-            errors.sickLeave = {};
-            if (!values.sickLeave?.startDate) {
-              errors.sickLeave.startDate = requiredError;
-              // console.log(requiredError);
+        if (values.type === EntryType.OccupationalHealthcare) {
+          if (!values.employerName) {
+            errors.employerName = requiredError;
+          }
+          if (
+            values.sickLeave &&
+            (values.sickLeave.startDate !== "" ||
+              values.sickLeave.endDate !== "")
+          ) {
+            let sickLeaveValid = true;
+            const sickLeaveError: {
+              startDate?: string;
+              endDate?: string;
+            } = {};
+
+            if (!values.sickLeave.startDate) {
+              sickLeaveError.startDate = requiredError;
+              sickLeaveValid = false;
             } else {
               if (!isValidDate(values.sickLeave.startDate)) {
-                errors.sickLeave.startDate = invalidDateError;
-                // console.log(invalidDateError);
+                sickLeaveError.startDate = invalidDateError;
+                sickLeaveValid = false;
               }
             }
-            if (!values.sickLeave?.endDate) {
-              errors.sickLeave.endDate = requiredError;
+
+            if (!values.sickLeave.endDate) {
+              sickLeaveError.endDate = requiredError;
+              sickLeaveValid = false;
             } else {
               if (!isValidDate(values.sickLeave.endDate)) {
-                errors.sickLeave.endDate = invalidDateError;
+                sickLeaveError.endDate = invalidDateError;
+                sickLeaveValid = false;
               }
+            }
+
+            if (!sickLeaveValid) {
+              errors.sickLeave = sickLeaveError;
             }
           }
         }
         return errors;
       }}
     >
-      {({ values, isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({
+        // validateForm,
+        values,
+        isValid,
+        dirty,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
         return (
           <Form className="form ui">
             <Field
@@ -203,16 +253,24 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               label="Entry type"
               name="type"
               options={entryTypeOptions}
+              onChange={(e) => {
+                setEntryType(e.target.value as EntryType);
+                setBaseValues({
+                  description: values.description,
+                  date: values.date,
+                  specialist: values.specialist,
+                  diagnosisCodes: values.diagnosisCodes,
+                });
+              }}
             />
-            {values.type === "HealthCheck" ? (
+            {values.type === EntryType.HealthCheck ? (
               <HealthCheckRatingSelectField
                 label="Health check rating"
                 name="healthCheckRating"
                 options={healthCheckRatingOptions}
               />
-            ) : values.type === "OccupationalHealthcare" ? (
+            ) : values.type === EntryType.OccupationalHealthcare ? (
               <>
-                {/* FOR LATER */}
                 <Field
                   label="Employer"
                   placeholder="Employer name"
@@ -228,27 +286,27 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                   <Field
                     label="Yes"
                     type="radio"
+                    value="yes"
                     checked={sickLeaveBool}
                     component={UiForm.Radio}
-                    onChange={() => {
-                      setSickLeaveBool(true);
-                      setFieldValue("sickLeave", {
-                        startDate: "",
-                        endDate: "",
-                      });
-                    }}
+                    onChange={() =>
+                      // I couldn't get it to validate after updating this boolean  ¯\_(ツ)_/¯
+                      // The validation occurs using the previous state
+                      setSickLeaveBool(true)
+                    }
                   />
                   <Field
                     label="No"
                     type="radio"
+                    value="no"
                     checked={!sickLeaveBool}
                     component={UiForm.Radio}
-                    onChange={() => {
-                      setSickLeaveBool(false);
-                      setFieldValue("sickLeave", undefined);
-                    }}
+                    onChange={() =>
+                      // I couldn't get it to validate after updating this boolean  ¯\_(ツ)_/¯
+                      // The validation occurs using the previous state
+                      setSickLeaveBool(false)
+                    }
                   />
-                  <div>Picked: {sickLeaveBool ? "Yes" : "No"}</div>
                 </UiForm.Group>
                 {sickLeaveBool && (
                   <>
@@ -256,7 +314,6 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                       label="Start date"
                       placeholder="YYYY-MM-DD"
                       name="sickLeave.startDate"
-                      type="radio"
                       component={TextField}
                     />
                     <Field

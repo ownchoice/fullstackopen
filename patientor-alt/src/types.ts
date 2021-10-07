@@ -30,22 +30,28 @@ export enum HealthCheckRating {
 
 export type HealthCheckRatingStrings = keyof typeof HealthCheckRating;
 
-export type EntryType = "HealthCheck" | "OccupationalHealthcare" | "Hospital";
+// export type EntryType = "HealthCheck" | "OccupationalHealthcare" | "Hospital";
 
-// not sure about this
-export const EntryTypes: Array<string> = [
-  "HealthCheck",
-  "OccupationalHealthcare",
-  "Hospital",
-];
+// // not sure about this
+// export const EntryTypes: Array<string> = [
+//   "HealthCheck",
+//   "OccupationalHealthcare",
+//   "Hospital",
+// ];
+
+export enum EntryType {
+  OccupationalHealthcare = "OccupationalHealthcare",
+  HealthCheck = "HealthCheck",
+  Hospital = "Hospital",
+}
 
 interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
+  type: EntryType.HealthCheck;
   healthCheckRating: HealthCheckRating;
 }
 
 interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
+  type: EntryType.OccupationalHealthcare;
   employerName: string;
   sickLeave?: {
     startDate: string;
@@ -54,7 +60,7 @@ interface OccupationalHealthcareEntry extends BaseEntry {
 }
 
 interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
+  type: EntryType.Hospital;
   discharge: {
     date: string;
     criteria: string;

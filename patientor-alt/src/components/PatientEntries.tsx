@@ -1,6 +1,6 @@
 import React from "react";
 import { useStateValue } from "../state";
-import { assertNever, Entry } from "../types";
+import { assertNever, Entry, EntryType } from "../types";
 import { Icon, Card } from "semantic-ui-react";
 
 interface Props {
@@ -29,7 +29,7 @@ const PatientEntries = ({ entries }: Props) => {
 
   const renderEntry = (entry: Entry) => {
     switch (entry.type) {
-      case "HealthCheck":
+      case EntryType.HealthCheck:
         return (
           <>
             <Card.Content>
@@ -52,7 +52,7 @@ const PatientEntries = ({ entries }: Props) => {
             )}
           </>
         );
-      case "OccupationalHealthcare":
+      case EntryType.OccupationalHealthcare:
         return (
           <>
             <Card.Content>
@@ -94,7 +94,7 @@ const PatientEntries = ({ entries }: Props) => {
             )}
           </>
         );
-      case "Hospital":
+      case EntryType.Hospital:
         return (
           <>
             <Card.Content>

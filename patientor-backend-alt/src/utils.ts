@@ -156,10 +156,16 @@ export const toNewPatientEntry = (object: EntryFields): EntryWithoutId => {
         employerName: parseString(object.employerName, "employerName"),
       };
 
-      if (object.sickLeave) {
+      if (
+        object.sickLeave &&
+        isString(object.sickLeave.startDate) &&
+        isString(object.sickLeave.endDate) &&
+        object.sickLeave.startDate !== "" &&
+        object.sickLeave.endDate !== ""
+      ) {
         placeholderEntry.sickLeave = {
-          startDate: parseDate(object.sickLeave?.startDate),
-          endDate: parseDate(object.sickLeave?.endDate),
+          startDate: parseDate(object.sickLeave.startDate),
+          endDate: parseDate(object.sickLeave.endDate),
         };
       }
 
