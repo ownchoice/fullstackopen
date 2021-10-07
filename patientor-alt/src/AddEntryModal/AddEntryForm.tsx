@@ -18,7 +18,8 @@ interface Props {
 }
 
 /*
-"The easiest but surely not the most elegant way to do this exercise is to have a separate form for each different entry type. Getting the types to work properly might be a slight challenge if you use just a single form."
+"The easiest but surely not the most elegant way to do this exercise is to have a separate form for each different entry type.
+Getting the types to work properly might be a slight challenge if you use just a single form."
 
 - It was a nightmare indeed, that radio button for an optional attribute is pure suffering
 */
@@ -165,6 +166,8 @@ export const AddEntryForm: React.FC<Props> = ({
             | {
                 startDate?: string;
                 endDate?: string;
+                date?: string;
+                criteria?: string;
               };
         } = {};
         // const errors: any = {};
@@ -179,6 +182,7 @@ export const AddEntryForm: React.FC<Props> = ({
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
+
         if (values.type === EntryType.OccupationalHealthcare) {
           if (!values.employerName) {
             errors.employerName = requiredError;
@@ -219,6 +223,26 @@ export const AddEntryForm: React.FC<Props> = ({
             }
           }
         }
+
+        if (values.type === EntryType.Hospital) {
+          if (
+            !values.discharge.date ||
+            !values.discharge.criteria ||
+            (values.discharge.date && !isValidDate(values.discharge.date))
+          ) {
+            errors.discharge = {};
+            if (!values.discharge.date) {
+              errors.discharge.date = requiredError;
+            } else if (!isValidDate(values.discharge.date)) {
+              errors.discharge.date = invalidDateError;
+            }
+
+            if (!values.discharge.criteria) {
+              errors.discharge.criteria = requiredError;
+            }
+          }
+        }
+
         return errors;
       }}
     >
@@ -332,7 +356,20 @@ export const AddEntryForm: React.FC<Props> = ({
                 )}
               </>
             ) : (
-              <p>Hospital</p>
+              <>
+                <Field
+                  label="Discharge date"
+                  placeholder="YYYY-MM-DD"
+                  name="discharge.date"
+                  component={TextField}
+                />
+                <Field
+                  label="Discharge criteria"
+                  placeholder="Discharge criteria"
+                  name="discharge.criteria"
+                  component={TextField}
+                />
+              </>
             )}
             <Grid>
               <Grid.Column floated="left" width={5}>
