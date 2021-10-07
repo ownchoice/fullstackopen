@@ -17,6 +17,12 @@ interface Props {
   onCancel: () => void;
 }
 
+/*
+"The easiest but surely not the most elegant way to do this exercise is to have a separate form for each different entry type. Getting the types to work properly might be a slight challenge if you use just a single form."
+
+- It was a nightmare indeed, that radio button for an optional attribute is pure suffering
+*/
+
 // structure of a single option
 export type EntryTypeOption = {
   value: EntryType;
